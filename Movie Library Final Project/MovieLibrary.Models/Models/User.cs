@@ -9,7 +9,6 @@ namespace MovieLibrary.Models.Models
     public record User
     {
         public int UserId { get; set; }
-        public int SubscriptionId { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
     }

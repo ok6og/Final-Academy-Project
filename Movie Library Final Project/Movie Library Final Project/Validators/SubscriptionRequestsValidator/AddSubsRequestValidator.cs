@@ -1,0 +1,26 @@
+﻿using FluentValidation;
+using MovieLibrary.Models.Requests.SubscriptionRequests;
+
+namespace Movie_Library_Final_Project.Validators.SubscriptionRequestsValidator
+{
+    public class AddSubsRequestValidator : AbstractValidator<AddSubscriptionRequest>
+    {
+        public AddSubsRequestValidator()
+        {
+            RuleFor(x => x.UserId)
+               .NotEmpty().WithMessage("Cant assign a subscription to an user without Id")
+               .GreaterThanOrEqualTo(0).WithMessage("There are no negative Id's");
+            RuleFor(x => x.PlanId)
+               .NotEmpty().WithMessage("There are no plans without an Id")
+               .GreaterThanOrEqualTo(0).WithMessage("There are no negative Id's");
+            RuleFor(x => x.SubscriptionValidTill)
+                .NotEmpty()
+                .GreaterThan(DateTime.MinValue).WithMessage("We can't work with such dates")
+                .LessThan(DateTime.MaxValue).WithMessage("We can't work with such dates");
+            RuleFor(x => x.SubscribedAtDate)
+                .NotEmpty()
+                .GreaterThan(DateTime.MinValue).WithMessage("We can't work with such dates")
+                .LessThan(DateTime.MaxValue).WithMessage("We can't work with such dates");
+        }
+    }
+}

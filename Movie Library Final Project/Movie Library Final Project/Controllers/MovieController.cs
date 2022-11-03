@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MovieLibrary.Models.Mediatr.MovieCommands;
 using MovieLibrary.Models.Models;
+using MovieLibrary.Models.Requests.MovieRequests;
 
 namespace Movie_Library_Final_Project.Controllers
 {
@@ -11,20 +12,41 @@ namespace Movie_Library_Final_Project.Controllers
     {
         private readonly IMediator _mediator;
 
-
-        private readonly ILogger<MovieController> _logger;
-
-        public MovieController(ILogger<MovieController> logger, IMediator mediator)
+        public MovieController(IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
         }
 
-        [HttpPost(Name = "GetWeatherForecast")]
-        public async Task<IActionResult> CreateMovie(Movie movie)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("Get All Movies")]
+        public async Task<IActionResult> GetAllMovies()
+        {
+            return Ok(await _mediator.Send(new GetAllMoviesCommand()));
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("Get a Movie")]
+        public async Task<IActionResult> GetMovie(int movieId)
+        {
+            return Ok(await _mediator.Send(new GetMovieByIdCommand(movieId)));
+        }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost("Create A Movie")]
+        public async Task<IActionResult> CreateMovie([FromBody]AddMovieRequest movie)
         {
             return Ok(await _mediator.Send(new AddMovieCommand(movie)));
-
+        }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPut("Update A Movie")]
+        public async Task<IActionResult> UpdateMovie([FromBody] UpdateMovieRequest movie)
+        {
+            return Ok(await _mediator.Send(new UpdateMovieCommand(movie)));
+        }
+        [HttpDelete("Delete a Movie")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Delete(int movieId)
+        {
+            return Ok(await _mediator.Send(new DeleteMovieCommand(movieId)));
         }
     }
 }

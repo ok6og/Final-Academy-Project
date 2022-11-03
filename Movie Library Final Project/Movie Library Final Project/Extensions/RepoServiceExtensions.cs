@@ -9,6 +9,9 @@ namespace Movie_Library_Final_Project.Extensions
         {
 
             services.AddSingleton<IMovieRepository, MovieRepository>();
+            services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IPlanRepository, PlanRepository>();
 
             return services;
         }

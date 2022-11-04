@@ -30,9 +30,9 @@ namespace MovieLibrary.BL.CommandHandlers.SubscriptionCommandHandlers
         {
             var months = request.months;
             var sub = _mapper.Map<Subscription>(request.subscription);
-            await _subsRepo.AddSubscription(sub,months);
+            var subWithId = await _subsRepo.AddSubscription(sub,months);
 
-            var subResponse = _mapper.Map<SubscriptionResponse>(request.subscription);
+            var subResponse = _mapper.Map<SubscriptionResponse>(subWithId);
             subResponse.Plan =await _planRepo.GetPlanById(sub.PlanId);
             subResponse.User = await _userRepo.GetUserById(sub.UserId);
             return subResponse;

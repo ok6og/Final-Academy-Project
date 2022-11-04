@@ -7,6 +7,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Movie_Library_Final_Project.Middleware;
 using Movie_Library_Final_Project.HealthChecks;
+using Kafka.KafkaConfig;
 
 var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -16,6 +17,11 @@ var logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddSerilog(logger);
+
+builder.Services.Configure<MyKafkaSettings>(
+    builder.Configuration.GetSection(nameof(MyKafkaSettings)));
+builder.Services.Configure<List<MyKafkaSettings>>(
+    builder.Configuration.GetSection(nameof(MyKafkaSettings)));
 
 
 // Add services to the container.

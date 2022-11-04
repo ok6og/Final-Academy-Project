@@ -1,5 +1,8 @@
-﻿using MovieLibrary.DL.Interfaces;
+﻿using Kafka.HostedService;
+using Kafka.ProducerConsumer.Generic;
+using MovieLibrary.DL.Interfaces;
 using MovieLibrary.DL.Repository;
+using MovieLibrary.Models.Responses;
 
 namespace Movie_Library_Final_Project.Extensions
 {
@@ -12,6 +15,8 @@ namespace Movie_Library_Final_Project.Extensions
             services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IPlanRepository, PlanRepository>();
+            services.AddSingleton<KafkaProducer<int, SubscriptionResponse>>();
+            services.AddSingleton<HostedServiceSubscriptionConsumer>();
 
             return services;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Confluent.Kafka;
 using MessagePack;
 
-namespace MovieLibrary.BL.Kafka
+namespace Kafka.MessagePack
 {
     public class MsgPackSerializer<TValue> : ISerializer<TValue>
     {

@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kafka\Kafka.csproj" />
     <ProjectReference Include="..\MovieLibrary.BL\MovieLibrary.BL.csproj" />
   </ItemGroup>
 

@@ -72,8 +72,9 @@ namespace MovieLibrary.DL.Repository
                 {
                     var query = "SELECT * FROM SUBSCRIPTIONS WITH(NOLOCK)";
                     await conn.OpenAsync();
+                    var result = await conn.QueryAsync<Subscription>(query);
                     _logger.LogInformation("Successfully got all subscriptions");
-                    return await conn.QueryAsync<Subscription>(query);
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -110,7 +111,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<Subscription>("UPDATE SUBSCRIPTIONS SET PlanId = @PlanId, UserId = @UserId, CreatedAt = @CreatedAt, ValidTill = @ValidTill output INSERTED.* WHERE SUBSCRIPTIONID = @Id",
-                        new { PlanId = subscription.PlanId, UserId = subscription.UserId, CreatedAt = subscription.CreatedAt, ValidTill = subscription.ValidTill, Id = subscription.SubscriptionsId });
+                        new { PlanId = subscription.PlanId, UserId = subscription.UserId, CreatedAt = subscription.CreatedAt, ValidTill = subscription.ValidTill, Id = subscription.SubscriptionId });
                     _logger.LogInformation("Successfully updated a subscription");
                     return result;
                 }

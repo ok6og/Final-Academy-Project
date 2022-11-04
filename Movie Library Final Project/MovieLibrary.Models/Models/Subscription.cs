@@ -8,7 +8,7 @@ namespace MovieLibrary.Models.Models
 {
     public record Subscription
     {
-        public int SubscriptionsId { get; set; }
+        public int SubscriptionId { get; set; }
         public int PlanId { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }

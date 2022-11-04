@@ -13,15 +13,15 @@ namespace Movie_Library_Final_Project.Validators.SubscriptionRequestsValidator
             RuleFor(x => x.PlanId)
                .NotEmpty().WithMessage("There are no plans without an Id")
                .GreaterThanOrEqualTo(0).WithMessage("There are no negative Id's");
-            RuleFor(x => x.SubscriptionValidTill)
+            RuleFor(x => x.ValidTill)
                 .NotEmpty()
                 .GreaterThan(DateTime.MinValue).WithMessage("We can't work with such dates")
                 .LessThan(DateTime.MaxValue).WithMessage("We can't work with such dates");
-            RuleFor(x => x.SubscribedAtDate)
+            RuleFor(x => x.CreatedAt)
                 .NotEmpty()
                 .GreaterThan(DateTime.MinValue).WithMessage("We can't work with such dates")
                 .LessThan(DateTime.MaxValue).WithMessage("We can't work with such dates");
-            RuleFor(x=> x.SubscriptionsId)
+            RuleFor(x=> x.SubscriptionId)
                 .NotEmpty().WithMessage("Cant find a subscription without an Id")
                .GreaterThanOrEqualTo(0).WithMessage("There are no negative Id's");
         }

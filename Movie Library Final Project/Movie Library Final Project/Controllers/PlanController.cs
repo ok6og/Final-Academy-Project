@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieLibrary.Models.Mediatr.PlanCommands;
 using MovieLibrary.Models.Mediatr.UserCommands;
+using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Requests.PlanRequests;
 using MovieLibrary.Models.Requests.UserRequests;
 
@@ -29,6 +30,8 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get a Plan")]
         public async Task<IActionResult> GetPlan(int planId)
         {
+            var result = await _mediator.Send(new GetPlanByIdCommand(planId));
+            if (result == null) return NotFound("Plan Doesn't Exist");
             return Ok(await _mediator.Send(new GetPlanByIdCommand(planId)));
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -41,12 +44,16 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpPut("Update A Plan")]
         public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanRequest plan)
         {
+            var result = await _mediator.Send(new GetPlanByIdCommand(plan.PlanId));
+            if (result == null) return NotFound("Plan Doesn't Exist");
             return Ok(await _mediator.Send(new UpdatePlanCommand(plan)));
         }
         [HttpDelete("Delete a Plan")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePlan(int planId)
         {
+            var result = await _mediator.Send(new GetPlanByIdCommand(planId));
+            if (result == null) return NotFound("Plan Doesn't Exist");
             return Ok(await _mediator.Send(new DeletePlanCommand(planId)));
         }
     }

@@ -118,25 +118,23 @@ namespace MovieLibrary.DL.Repository
             }
             return null;
         }
-
-        public async Task<User?> Subscribe(int userId, int subscriptionId, int months)
+        public async Task<bool> DoesUserHaveSubscription(int userId)
         {
             try
             {
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    var result = await conn.QueryFirstAsync<User>("UPDATE USERS SET SUBSCRIPTIONID = @SubscriptionId,IsSubscribed = @IsSubscribed,SubscribedAtDate = @SubscribedAtDate,SubscriptionValidTill = @SubscriptionValidTill  output INSERTED.* WHERE USERID = @Id",
-                        new { SubscriptionId = subscriptionId, Id = userId, IsSubscribed = true, SubscribedAtDate = DateTime.Now, SubscriptionValidTill = DateTime.Now.AddMonths(months) });
-                    _logger.LogInformation("Successfully subscribed a user");
-                    return result;
+                    var result = await conn.QueryAsync<User>("SELECT * FROM SUBSCRIPTIONS WITH(NOLOCK) WHERE UserId = @Id", new { Id = userId });
+                    return result.Any();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in {nameof(UpdateUser)}: {ex.Message}", ex);
+                _logger.LogError($"Error in {nameof(GetUserById)}: {ex.Message}", ex);
             }
-            return null;
+            return false;
         }
+
     }
 }

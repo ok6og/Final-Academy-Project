@@ -14,6 +14,6 @@ namespace MovieLibrary.DL.Interfaces
         Task<User?> AddUser(User user);
         Task<User?> UpdateUser(User user);
         Task<User?> DeleteUser(int userId);
-        Task<User?> Subscribe(int userId, int subscriptionId, int months);
+        Task<bool> DoesUserHaveSubscription(int userId);
     }
 }

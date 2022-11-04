@@ -28,7 +28,9 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get a Movie")]
         public async Task<IActionResult> GetMovie(int movieId)
         {
-            return Ok(await _mediator.Send(new GetMovieByIdCommand(movieId)));
+            var result = await _mediator.Send(new GetMovieByIdCommand(movieId));
+            if (result == null) return NotFound("Movie Doesn't Exist");
+            return Ok(result);
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("Create A Movie")]
@@ -40,12 +42,16 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpPut("Update A Movie")]
         public async Task<IActionResult> UpdateMovie([FromBody] UpdateMovieRequest movie)
         {
+            var result = await _mediator.Send(new GetMovieByIdCommand(movie.MovieId));
+            if (result == null) return NotFound("Movie Doesn't Exist");
             return Ok(await _mediator.Send(new UpdateMovieCommand(movie)));
         }
         [HttpDelete("Delete a Movie")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int movieId)
         {
+            var result = await _mediator.Send(new GetMovieByIdCommand(movieId));
+            if (result == null) return NotFound("Movie Doesn't Exist");
             return Ok(await _mediator.Send(new DeleteMovieCommand(movieId)));
         }
     }

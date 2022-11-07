@@ -7,10 +7,11 @@ using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.UserCommands;
 using MovieLibrary.Models.Models;
+using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
 {
-    public class GetUserByIdCommandHandler : IRequestHandler<GetUserByIdCommand,User>
+    public class GetUserByIdCommandHandler : IRequestHandler<GetUserByIdCommand,HttpResponse<User>>
     {
         private readonly IUserRepository _userRepository;
 
@@ -19,9 +20,22 @@ namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
             _userRepository = userRepository;
         }
 
-        public async Task<User> Handle(GetUserByIdCommand request, CancellationToken cancellationToken)
+        public async Task<HttpResponse<User>> Handle(GetUserByIdCommand request, CancellationToken cancellationToken)
         {
-            return await _userRepository.GetUserById(request.userId);
+            var result = await _userRepository.GetUserById(request.userId);
+            var response = new HttpResponse<User>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Message = "Successfully gotten an user",
+                Value = result
+            };
+            if (result == null)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                response.Message = "User not found";
+            }
+            return response;
+            //return await _userRepository.GetUserById(request.userId);
         }
     }
 }

@@ -108,8 +108,9 @@ namespace MovieLibrary.Test
             var result = await handler.Handle(command, new CancellationToken());
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Equal(userId, result.UserId);
+            Assert.NotNull(result.Value);
+            Assert.Equal(userId, result.Value.UserId);
+            Assert.Equal("Successfully gotten an user", result.Message);
         }
         [Fact]
         public async Task User_NotFound_GetById()
@@ -158,7 +159,7 @@ namespace MovieLibrary.Test
             var result = await handler.Handle(command, new CancellationToken());
             //assert
             Assert.NotNull(result);
-            Assert.Equal(userId, result.UserId);
+            Assert.Equal(userId, result.Value.UserId);
         }
 
         [Fact]
@@ -190,8 +191,7 @@ namespace MovieLibrary.Test
             //act
             var result = await handler.Handle(command, new CancellationToken());
             //assert
-            Assert.NotNull(result);
-            Assert.Equal(userId, result.UserId);
+            Assert.Null(result.Value);
         }
     }
 }

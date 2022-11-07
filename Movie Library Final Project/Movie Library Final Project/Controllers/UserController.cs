@@ -30,13 +30,20 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get a Users")]
         public async Task<IActionResult> GetUsers(int userId)
         {
+
             var result = await _mediator.Send(new GetUserByIdCommand(userId));
-            if (result == null) return NotFound("User Does not exist");
-            return Ok(await _mediator.Send(new GetUserByIdCommand(userId)));
+            if (result.StatusCode== System.Net.HttpStatusCode.OK)
+            {
+                return StatusCode((int)result.StatusCode, result.Value);
+            }
+            else
+            {
+                return StatusCode((int)result.StatusCode, result.Message);
+            }
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("Create A User")]
-        public async Task<IActionResult> CreateMovie([FromBody] AddUserRequest user)
+        public async Task<IActionResult> AddUser([FromBody] AddUserRequest user)
         {
             return Ok(await _mediator.Send(new AddUserCommand(user)));
         }

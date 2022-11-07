@@ -20,12 +20,9 @@ namespace Movie_Library_Final_Project.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly KafkaProducer<int, SubscriptionResponse> _kafkaProducer;
-
-        public SubscriptionController(IMediator mediator, KafkaProducer<int, SubscriptionResponse> kafkaProducer, IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
+        public SubscriptionController(IMediator mediator,IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
         {
             _mediator = mediator;
-            _kafkaProducer = kafkaProducer;
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -35,6 +32,7 @@ namespace Movie_Library_Final_Project.Controllers
             return Ok(await _mediator.Send(new GetAllSubscriptionsCommand()));
         }
 
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("Get a Subscription")]
         public async Task<IActionResult> GetSubscription(int subsId)
@@ -43,6 +41,8 @@ namespace Movie_Library_Final_Project.Controllers
             if(subs == null) return NotFound("This subscription does not exist");
             return Ok(subs);
         }
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("Create A Subscription")]
         public async Task<IActionResult> CreateSubscription([FromBody] AddSubscriptionRequest subs, int months)
@@ -52,9 +52,9 @@ namespace Movie_Library_Final_Project.Controllers
             var plan = await _mediator.Send(new GetPlanByIdCommand(subs.PlanId));
             if (user == null || plan == null) return NotFound("User or plan does not exist");
             var subsToReturn = await _mediator.Send(new AddSubscriptionCommand(subs, months));
-            _kafkaProducer.Produce(subsToReturn.SubscriptionId, subsToReturn);
             return Ok(subsToReturn);
         }
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPut("Update A Subscription")]
         public async Task<IActionResult> UpdateSubscription([FromBody] UpdateSubscriptionRequest subs)
@@ -64,6 +64,7 @@ namespace Movie_Library_Final_Project.Controllers
             return Ok(await _mediator.Send(new UpdateSubscriptionCommand(subs)));
         }
         [HttpDelete("Delete a Subscription")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int subsId)
         {

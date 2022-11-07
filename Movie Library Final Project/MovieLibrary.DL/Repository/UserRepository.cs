@@ -106,8 +106,8 @@ namespace MovieLibrary.DL.Repository
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    var result = await conn.QueryFirstAsync<User>("UPDATE USERS SET NAME = @Name, AGE = @Age output INSERTED.* WHERE USERID = @Id",
-                        new { Name = user.Name, Age = user.Age});
+                    var result = await conn.QueryFirstAsync<User>("UPDATE USERS SET NAME = @Name, AGE = @Age, USERONPLAN = @UserOnPlan output INSERTED.* WHERE USERID = @Id",
+                        new { Name = user.Name, Age = user.Age, UserOnPlan = user.UserOnPlan, Id = user.UserId});
                     _logger.LogInformation("Successfully updated a user");
                     return result;
                 }

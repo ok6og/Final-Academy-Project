@@ -24,6 +24,7 @@ namespace Movie_Library_Final_Project.Controllers
             return Ok(await _mediator.Send(new GetAllMoviesCommand()));
         }
 
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("Get a Movie")]
         public async Task<IActionResult> GetMovie(int movieId)
@@ -39,6 +40,7 @@ namespace Movie_Library_Final_Project.Controllers
             return Ok(await _mediator.Send(new AddMovieCommand(movie)));
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("Update A Movie")]
         public async Task<IActionResult> UpdateMovie([FromBody] UpdateMovieRequest movie)
         {
@@ -48,6 +50,7 @@ namespace Movie_Library_Final_Project.Controllers
         }
         [HttpDelete("Delete a Movie")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int movieId)
         {
             var result = await _mediator.Send(new GetMovieByIdCommand(movieId));

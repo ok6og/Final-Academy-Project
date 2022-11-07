@@ -16,5 +16,7 @@ namespace MovieLibrary.Models.Models
         public string Name { get; set; }
         [Key(2)]
         public int Age { get; set; }
+        [Key(3)]
+        public string UserOnPlan { get; set; }
     }
 }

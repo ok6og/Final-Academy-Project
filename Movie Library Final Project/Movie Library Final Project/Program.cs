@@ -54,8 +54,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.RegisterHealthChecks();
 app.MapControllers();
-
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.Run();

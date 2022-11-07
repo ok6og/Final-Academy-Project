@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Kafka.KafkaConfig;
 using Kafka.ProducerConsumer;
 using Microsoft.Extensions.Hosting;
@@ -17,14 +18,16 @@ namespace Kafka.HostedService
         private readonly IUserRepository _userRepository;
         private readonly IPlanRepository _planRepository;
         private readonly IOptionsMonitor<List<MyKafkaSettings>> _kafkaSettings;
+        private readonly IMapper _mapper;
 
 
-        public HostedServiceSubscriptionConsumer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings, IPlanRepository planRepository, IUserRepository userRepository)
+        public HostedServiceSubscriptionConsumer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings, IPlanRepository planRepository, IUserRepository userRepository, IMapper mapper)
         {
+            _mapper = mapper;
             _kafkaSettings = kafkaSettings;
             _planRepository = planRepository;
             _userRepository = userRepository;
-            _subsConsumer = new SubscriptionConsumer(kafkaSettings,_userRepository,_planRepository);
+            _subsConsumer = new SubscriptionConsumer(_kafkaSettings, _userRepository, _planRepository, _mapper);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

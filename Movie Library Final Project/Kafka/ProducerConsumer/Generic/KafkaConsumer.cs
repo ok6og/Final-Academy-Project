@@ -20,7 +20,7 @@ namespace Kafka.ProducerConsumer.Generic
         public KafkaConsumer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
         {
             _kafkaSettings = kafkaSettings;
-            _thisKafkaSettings = _kafkaSettings.CurrentValue.First(x => x.objectType.Contains(typeof(TValue).Name));
+            _thisKafkaSettings = kafkaSettings.CurrentValue.First(x => x.objectType.Contains(typeof(TValue).Name));
             _config = new ConsumerConfig()
             {
                 BootstrapServers = _thisKafkaSettings.BootstrapServers,
@@ -44,6 +44,7 @@ namespace Kafka.ProducerConsumer.Generic
                         var value = _consumer.Consume();
                         var objectValue = value.Value;
                         HandleMesseges(objectValue);
+                        Console.WriteLine("THIS IS CONSUMED");
                     }
                     catch (Exception ex)
                     {

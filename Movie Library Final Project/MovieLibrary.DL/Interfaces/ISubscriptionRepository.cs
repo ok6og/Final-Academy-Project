@@ -14,5 +14,7 @@ namespace MovieLibrary.DL.Interfaces
         Task<Subscription?> AddSubscription(Subscription movie, int months);
         Task<Subscription?> UpdatSubscription(Subscription movie);
         Task<Subscription?> DeleteSubscription(int movieId);
+        Task<IEnumerable<Subscription?>> GetAllSubscriptionsForMonth();
+
     }
 }

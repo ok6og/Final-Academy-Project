@@ -122,5 +122,25 @@ namespace MovieLibrary.DL.Repository
             }
             return null;
         }
+
+        public async Task<IEnumerable<Subscription?>> GetAllSubscriptionsForMonth()
+        {
+            try
+            {
+                await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    var query = "SELECT * FROM SUBSCRIPTIONS WITH(NOLOCK) WHERE MONTH(CreatedAt) = @Month";
+                    await conn.OpenAsync();
+                    var result = await conn.QueryAsync<Subscription>(query, new {Month = DateTime.Now.Month});
+                    _logger.LogInformation("Successfully got all subscriptions for this month");
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in {nameof(GetAllSubscriptionsForMonth)}: {ex.Message}", ex);
+            }
+            return Enumerable.Empty<Subscription>();
+        }
     }
 }

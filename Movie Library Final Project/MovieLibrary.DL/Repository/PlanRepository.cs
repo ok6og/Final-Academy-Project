@@ -119,5 +119,24 @@ namespace MovieLibrary.DL.Repository
             }
             return null;
         }
+
+        public async Task<int> GetPlanPrice(int planId)
+        {
+            try
+            {
+                await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    await conn.OpenAsync();
+                    var result = await conn.QueryFirstOrDefaultAsync<int>("SELECT [PricePerMonth] FROM PLANS WITH(NOLOCK) WHERE PlanId = @Id", new { Id = planId });
+                    _logger.LogInformation("Successfully returned money");
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in {nameof(GetPlanPrice)}: {ex.Message}", ex);
+            }
+            return 0;
+        }
     }
 }

@@ -17,17 +17,21 @@ namespace Kafka.HostedService
         private readonly SubscriptionConsumer _subsConsumer;
         private readonly IUserRepository _userRepository;
         private readonly IPlanRepository _planRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IMonthlyProfitRepository _monthlyProfitRepository;
         private readonly IOptionsMonitor<List<MyKafkaSettings>> _kafkaSettings;
         private readonly IMapper _mapper;
 
 
-        public HostedServiceSubscriptionConsumer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings, IPlanRepository planRepository, IUserRepository userRepository, IMapper mapper)
+        public HostedServiceSubscriptionConsumer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings, IPlanRepository planRepository, IUserRepository userRepository, IMapper mapper, ISubscriptionRepository subscriptionRepository, IMonthlyProfitRepository monthlyProfitRepository)
         {
             _mapper = mapper;
             _kafkaSettings = kafkaSettings;
             _planRepository = planRepository;
             _userRepository = userRepository;
-            _subsConsumer = new SubscriptionConsumer(_kafkaSettings, _userRepository, _planRepository, _mapper);
+            _subscriptionRepository = subscriptionRepository;
+            _monthlyProfitRepository = monthlyProfitRepository;
+            _subsConsumer = new SubscriptionConsumer(_kafkaSettings, _userRepository, _planRepository, _mapper, _subscriptionRepository, _monthlyProfitRepository);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

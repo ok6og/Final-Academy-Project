@@ -26,6 +26,7 @@ namespace Movie_Library_Final_Project.Controllers
             return Ok(await _mediator.Send(new GetAllPlansCommand()));
         }
 
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("Get a Plan")]
         public async Task<IActionResult> GetPlan(int planId)
@@ -40,6 +41,7 @@ namespace Movie_Library_Final_Project.Controllers
         {
             return Ok(await _mediator.Send(new AddPlanCommand(plan)));
         }
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPut("Update A Plan")]
         public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanRequest plan)
@@ -49,6 +51,7 @@ namespace Movie_Library_Final_Project.Controllers
             return Ok(await _mediator.Send(new UpdatePlanCommand(plan)));
         }
         [HttpDelete("Delete a Plan")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePlan(int planId)
         {

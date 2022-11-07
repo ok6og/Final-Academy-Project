@@ -10,7 +10,7 @@ using MovieLibrary.Models.Models;
 
 namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
 {
-    internal class GetAllUsersCommandHandler : IRequestHandler<GetAllUsersCommand, IEnumerable<User>>
+    public class GetAllUsersCommandHandler : IRequestHandler<GetAllUsersCommand, IEnumerable<User>>
     {
         private readonly IUserRepository _userRepository;
 

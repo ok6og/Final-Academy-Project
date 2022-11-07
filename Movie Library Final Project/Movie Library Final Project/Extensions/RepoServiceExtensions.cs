@@ -18,6 +18,7 @@ namespace Movie_Library_Final_Project.Extensions
             services.AddSingleton<IPlanRepository, PlanRepository>();
             services.AddSingleton<KafkaProducer<int, Subscription>>();
             services.AddHostedService<HostedServiceSubscriptionConsumer>();
+            services.AddSingleton<IMonthlyProfitRepository, MonthlyProfitRepository>();
 
             return services;
         }

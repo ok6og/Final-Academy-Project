@@ -8,7 +8,7 @@ using MovieLibrary.Models.Responses;
 
 namespace Movie_Library_Final_Project.AutoMapper
 {
-    internal class AutoMappings : Profile
+    public class AutoMappings : Profile
     {
         public AutoMappings()
         {

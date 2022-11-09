@@ -8,10 +8,11 @@ using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.UserCommands;
 using MovieLibrary.Models.Models;
+using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
 {
-    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand,User>
+    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand,HttpResponse<User>>
     {
         private IUserRepository _userRepo;
         private IMapper _mapper;
@@ -22,10 +23,22 @@ namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
             _mapper = mapper;
         }
 
-        public async Task<User> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        public async Task<HttpResponse<User>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var user = _mapper.Map<User>(request.user);
-            return await _userRepo.UpdateUser(user);
+            var result = await _userRepo.UpdateUser(user);
+            var response = new HttpResponse<User>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Message = "Successfully added an user",
+                Value = result
+            };
+            if (result == null)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                response.Message = "There is not user with such Id";
+            }
+            return response;
         }
     }
 }

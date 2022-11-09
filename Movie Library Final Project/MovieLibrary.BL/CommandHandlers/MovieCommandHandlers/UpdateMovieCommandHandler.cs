@@ -8,10 +8,11 @@ using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.MovieCommands;
 using MovieLibrary.Models.Models;
+using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers
 {
-    public class UpdateMovieCommandHandler : IRequestHandler<UpdateMovieCommand, Movie>
+    public class UpdateMovieCommandHandler : IRequestHandler<UpdateMovieCommand, HttpResponse<Movie>>
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IMapper _mapper;
@@ -22,10 +23,22 @@ namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers
             _movieRepository = movieRepository;
         }
 
-        public async Task<Movie> Handle(UpdateMovieCommand request, CancellationToken cancellationToken)
+        public async Task<HttpResponse<Movie>> Handle(UpdateMovieCommand request, CancellationToken cancellationToken)
         {
             var movie = _mapper.Map<Movie>(request.movie);
-            return await _movieRepository.UpdatMovie(movie);
+            var result = await _movieRepository.UpdatMovie(movie);
+            var response = new HttpResponse<Movie>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Message = "Successfully updated a movie",
+                Value = result
+            };
+            if (result == null)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                response.Message = "There is no movie with such Id";
+            }
+            return response;
         }
     }
 }

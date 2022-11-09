@@ -20,7 +20,7 @@ namespace Movie_Library_Final_Project.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public SubscriptionController(IMediator mediator,IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
+        public SubscriptionController(IMediator mediator, IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
         {
             _mediator = mediator;
         }
@@ -29,7 +29,8 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get All Subscriptions")]
         public async Task<IActionResult> GetAllSubscriptions()
         {
-            return Ok(await _mediator.Send(new GetAllSubscriptionsCommand()));
+            var result = await _mediator.Send(new GetAllSubscriptionsCommand());
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -37,9 +38,8 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get a Subscription")]
         public async Task<IActionResult> GetSubscription(int subsId)
         {
-            var subs = await _mediator.Send(new GetSubscriptionByIdCommand(subsId));
-            if(subs == null) return NotFound("This subscription does not exist");
-            return Ok(subs);
+            var result = await _mediator.Send(new GetSubscriptionByIdCommand(subsId));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -47,30 +47,24 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpPost("Create A Subscription")]
         public async Task<IActionResult> CreateSubscription([FromBody] AddSubscriptionRequest subs, int months)
         {
-            if (subs.PlanId <= 0 || subs.UserId<= 0) return BadRequest("Invalid Id's");
-            var user = await _mediator.Send(new GetUserByIdCommand(subs.UserId));
-            var plan = await _mediator.Send(new GetPlanByIdCommand(subs.PlanId));
-            if (user == null || plan == null) return NotFound("User or plan does not exist");
-            var subsToReturn = await _mediator.Send(new AddSubscriptionCommand(subs, months));
-            return Ok(subsToReturn);
+            var result = await _mediator.Send(new AddSubscriptionCommand(subs, months));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPut("Update A Subscription")]
         public async Task<IActionResult> UpdateSubscription([FromBody] UpdateSubscriptionRequest subs)
         {
-            var subsCheck = await _mediator.Send(new GetSubscriptionByIdCommand(subs.SubscriptionId));
-            if (subsCheck == null) return NotFound("This subscription does not exist");
-            return Ok(await _mediator.Send(new UpdateSubscriptionCommand(subs)));
+            var result = await _mediator.Send(new UpdateSubscriptionCommand(subs));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [HttpDelete("Delete a Subscription")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int subsId)
         {
-            var subsCheck = await _mediator.Send(new GetSubscriptionByIdCommand(subsId));
-            if (subsCheck == null) return NotFound("This subscription does not exist");
-            return Ok(await _mediator.Send(new DeleteSubscriptionCommand(subsId)));
+            var result = await _mediator.Send(new DeleteSubscriptionCommand(subsId));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
     }
 }

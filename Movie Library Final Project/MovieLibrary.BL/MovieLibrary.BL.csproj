@@ -20,8 +20,4 @@
     <ProjectReference Include="..\MovieLibrary.Models\MovieLibrary.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using MovieLibrary.Models.Models;
+using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.Models.Mediatr.MovieCommands
 {
-    public record DeleteMovieCommand(int movieId) : IRequest<Movie>
+    public record DeleteMovieCommand(int movieId) : IRequest<HttpResponse<Movie>>
     {
     }
 }

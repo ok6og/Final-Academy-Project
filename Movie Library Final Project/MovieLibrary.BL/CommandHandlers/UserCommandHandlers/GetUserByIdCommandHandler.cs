@@ -35,7 +35,6 @@ namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
                 response.Message = "User not found";
             }
             return response;
-            //return await _userRepository.GetUserById(request.userId);
         }
     }
 }

@@ -12,7 +12,6 @@ namespace MovieLibrary.DL.Interfaces
         Task<MonthlyProfit?> AddMonthlyProfit(MonthlyProfit montlyProfit);
         Task<MonthlyProfit?> UpdateProfit(MonthlyProfit montlyProfit);
         Task<bool> IsThereReportAlready();
-
-
+        Task<MonthlyProfit?> GetMonthlyProfit(int month, int year);
     }
 }

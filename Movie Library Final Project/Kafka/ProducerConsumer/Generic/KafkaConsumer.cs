@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Kafka.ProducerConsumer.Generic
 {
-    public abstract class KafkaConsumer<TKey, TValue>
+    public abstract class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TValue>
     {
         public readonly IOptionsMonitor<List<MyKafkaSettings>> _kafkaSettings;
         private readonly MyKafkaSettings _thisKafkaSettings;

@@ -1,7 +1,10 @@
 ﻿using Kafka.HostedService;
 using Kafka.ProducerConsumer.Generic;
+using MovieLibrary.BL.Interfaces;
+using MovieLibrary.BL.Services;
 using MovieLibrary.DL.Interfaces;
-using MovieLibrary.DL.Repository;
+using MovieLibrary.DL.Repository.MongoDbRepository;
+using MovieLibrary.DL.Repository.MsSqlRepository;
 using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Responses;
 
@@ -19,6 +22,10 @@ namespace Movie_Library_Final_Project.Extensions
             services.AddSingleton<KafkaProducer<int, Subscription>>();
             services.AddHostedService<HostedServiceSubscriptionConsumer>();
             services.AddSingleton<IMonthlyProfitRepository, MonthlyProfitRepository>();
+            services.AddSingleton<IWatchedMoviesRepository, WatchedMoviesRepository>();
+            services.AddSingleton<IWatchListRepository, WatchListRepository>();
+            services.AddSingleton<IWatchedMoviesService, WatchedMoviesService>();
+            services.AddSingleton<IWatchListService, WatchListService>();
 
             return services;
         }

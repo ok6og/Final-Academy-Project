@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Models;
 
-namespace MovieLibrary.DL.Repository
+namespace MovieLibrary.DL.Repository.MsSqlRepository
 {
     public class UserRepository : IUserRepository
     {
@@ -30,7 +30,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<User>("INSERT INTO [Users]  (Name, Age) output INSERTED.* VALUES (@Name, @Age)",
-                        new {Name = user.Name, Age = user.Age});
+                        new { user.Name, user.Age });
                     _logger.LogInformation("Successfully added a user");
                     return result;
                 }
@@ -107,7 +107,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<User>("UPDATE USERS SET NAME = @Name, AGE = @Age, USERONPLAN = @UserOnPlan output INSERTED.* WHERE USERID = @Id",
-                        new { Name = user.Name, Age = user.Age, UserOnPlan = user.UserOnPlan, Id = user.UserId});
+                        new { user.Name, user.Age, user.UserOnPlan, Id = user.UserId });
                     _logger.LogInformation("Successfully updated a user");
                     return result;
                 }

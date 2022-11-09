@@ -61,7 +61,7 @@ namespace Kafka.ProducerConsumer
                 MonthlyProfit thisProfit = new MonthlyProfit()
                 {
                     Profit = allPlanPrices.Sum(),
-                    UserSubscriptions = thisMonthSubs.Count(),
+                    UserSubscriptionsForMonth = thisMonthSubs.Count(),
                     Month = DateTime.Now.ToString("MMMM"),
                     Year = DateTime.Now.Year
                 };

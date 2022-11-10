@@ -28,12 +28,21 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
         public async Task<HttpResponse<WatchedList>> Handle(FinishWatchListCommand request, CancellationToken cancellationToken)
         {
             int userId = request.userId;
+            if (userId <= 0)
+            {
+                return new HttpResponse<WatchedList>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
             var finishedWatchList = await _watchListRepository.GetWatchList(userId);
             if (finishedWatchList == null)
             {
                 return new HttpResponse<WatchedList>
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
+                    StatusCode = HttpStatusCode.NoContent,
                     Message = "You cant finish an empty watch list",
                     Value = null
                 };

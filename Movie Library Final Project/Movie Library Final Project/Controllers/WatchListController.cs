@@ -18,6 +18,8 @@ namespace Movie_Library_Final_Project.Controllers
 
         [HttpGet("Get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int userId)
         {
             var response = await _mediator.Send(new GetWatchListCommand(userId));
@@ -25,6 +27,8 @@ namespace Movie_Library_Final_Project.Controllers
         }
         [HttpPost("EmptyWatchList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> EmptyWatchList(int userId)
         {
             var response = await _mediator.Send(new EmptyWatchListCommand(userId));
@@ -32,6 +36,7 @@ namespace Movie_Library_Final_Project.Controllers
         }
         [HttpPost("AddMovieToWatch")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddMoviesToWatch(int userId, int movieId)
         {
             var response = await _mediator.Send(new AddMovieToWatchListCommand(userId, movieId));
@@ -39,6 +44,8 @@ namespace Movie_Library_Final_Project.Controllers
         }
         [HttpDelete("RemoveFromWatchList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveFromWatchList(int userId, int movieId)
         {
             var response = await _mediator.Send(new RemoveMovieFromWatchListCommand(userId, movieId));
@@ -46,6 +53,8 @@ namespace Movie_Library_Final_Project.Controllers
         }
         [HttpPost("AddToWatchedMovies")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddToWatchedMovies(int userId)
         {
             var response = await _mediator.Send(new FinishWatchListCommand(userId));

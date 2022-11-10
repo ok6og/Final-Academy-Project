@@ -26,21 +26,43 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
         }
         public async Task<HttpResponse<Watchlist>> Handle(AddMovieToWatchListCommand request, CancellationToken cancellationToken)
         {
-            var response = new HttpResponse<Watchlist>();
-
+            if (request.userId <= 0)
+            {
+                return new HttpResponse<Watchlist>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
+            if (request.movieId <= 0)
+            {
+                return new HttpResponse<Watchlist>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.MovieIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
             var movie = await _movieRepository.GetMovieById(request.movieId);
             var user = await _userRepository.GetUserById(request.userId);
             if (user == null)
             {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                response.Message = "There is no such user";
-                return response;
+                return new HttpResponse<Watchlist>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserDoesNotExist,
+                    Value = null
+                };
             }
             if (movie == null)
             {
-                response.StatusCode = HttpStatusCode.BadRequest;
-                response.Message = "There is no such movie";
-                return response;
+                return new HttpResponse<Watchlist>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.MovieDoesNotExist,
+                    Value = null
+                };
             }
             var watchList = await _watchListRepository.GetWatchList(request.userId);
             if (watchList == null)
@@ -52,10 +74,12 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
                     WatchList = new List<Movie>() { movie }
                 };
                 await _watchListRepository.AddWatchList(watchlistToReturn);
-                response.StatusCode = HttpStatusCode.OK;
-                response.Message = "Added a new watchlist";
-                response.Value = watchlistToReturn;
-                return response;
+                return new HttpResponse<Watchlist>
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Message = StaticResponses.SuccessfullyAddedTheObject,
+                    Value = watchlistToReturn
+                };
             }
             await _watchListRepository.RemoveWatchList(request.userId);
             var movies = watchList.WatchList;
@@ -67,10 +91,12 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
                 WatchList = movies
             };
             await _watchListRepository.AddWatchList(newWatchList);
-            response.StatusCode = HttpStatusCode.OK;
-            response.Message = "Added a movie to watchlist";
-            response.Value = newWatchList;
-            return response;
+            return new HttpResponse<Watchlist>
+            {
+                StatusCode = HttpStatusCode.OK,
+                Message = StaticResponses.SuccessfullyAddedTheObject,
+                Value = newWatchList
+            };
         }
     }
 }

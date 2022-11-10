@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
@@ -23,12 +24,21 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
 
         public async Task<HttpResponse<Watchlist>> Handle(EmptyWatchListCommand request, CancellationToken cancellationToken)
         {
+            if (request.userId <= 0)
+            {
+                return new HttpResponse<Watchlist>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
             var watchlist = await  _watchListRepository.GetWatchList(request.userId);
             if (watchlist == null)
             {
                 return new HttpResponse<Watchlist>
                 {
-                    Message = "Cannot delete watch list that does not exist",
+                    Message = StaticResponses.WatchListDoesNotExist,
                     StatusCode = System.Net.HttpStatusCode.NotFound,
                     Value = null
                 };
@@ -36,7 +46,7 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
             await _watchListRepository.EmptyWatchList(request.userId);
             return new HttpResponse<Watchlist>
             {
-                Message = "Deleted successfully watch list",
+                Message = StaticResponses.SuccessfullyCompletedTheOperation,
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Value = watchlist
             };

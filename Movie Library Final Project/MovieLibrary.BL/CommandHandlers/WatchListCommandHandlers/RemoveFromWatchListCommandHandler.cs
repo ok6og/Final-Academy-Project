@@ -23,6 +23,24 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
 
         public async Task<HttpResponse<Movie>> Handle(RemoveMovieFromWatchListCommand request, CancellationToken cancellationToken)
         {
+            if (request.userId <= 0)
+            {
+                return new HttpResponse<Movie>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
+            if (request.movieId <= 0)
+            {
+                return new HttpResponse<Movie>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.MovieIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
             var watchlist = await _watchListRepository.GetWatchList(request.userId);
             if (watchlist == null)
             {

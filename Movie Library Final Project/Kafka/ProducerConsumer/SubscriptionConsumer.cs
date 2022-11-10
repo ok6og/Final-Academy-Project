@@ -35,13 +35,11 @@ namespace Kafka.ProducerConsumer
                         var value = _consumer.Consume();
                         var objectValue = value.Value;
                         HandleMesseges(objectValue);
-                        Console.WriteLine("THIS IS CONSUMED");
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
                     }
-
                 }
             }, cancellationToken);
             return Task.CompletedTask;

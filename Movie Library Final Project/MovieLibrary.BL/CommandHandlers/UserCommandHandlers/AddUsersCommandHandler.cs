@@ -26,24 +26,30 @@ namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
         {
             var user = _mapper.Map<User>(request.user);
             var result = await _userRepo.AddUser(user);
-            var response = new HttpResponse<User>()
+            if (result == null)
+            {
+                return new HttpResponse<User>()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = "User could'not be added",
+                    Value = null
+                };
+            }
+            if (result.UserId <= 0)
+            {
+                return new HttpResponse<User>()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
+            return new HttpResponse<User>()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Message = "Successfully added an user",
                 Value = result
             };
-            if (result == null)
-            {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                response.Message = "User could'not be added";
-                return response;
-            }
-            if (result.UserId <= 0)
-            {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                response.Message = "Invalid Id";
-            }
-            return response;
         }
     }
 }

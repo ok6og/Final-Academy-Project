@@ -21,10 +21,8 @@ namespace MovieLibrary.BL.CommandHandlers.SubscriptionCommandHandlers
         private readonly IPlanRepository _planRepo;
         private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
-        private readonly KafkaProducer<int, Subscription> _kafkaProducer;
         private readonly IOptionsMonitor<List<MyKafkaSettings>> _kafkaSettings;
-
-
+        private readonly KafkaProducer<int, Subscription> _kafkaProducer;
 
         public AddSubscriptionCommandHandler(ISubscriptionRepository subsrepo, IMapper mapper, IPlanRepository planRepo, IUserRepository userRepo, IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
         {

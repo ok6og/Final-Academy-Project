@@ -16,6 +16,9 @@ namespace Movie_Library_Final_Project.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
         public async Task<IActionResult> GetWatchedMovies(int userId)
         {
             var response = await _mediator.Send(new GetWatchedMoviesListCommand(userId));
@@ -23,6 +26,8 @@ namespace Movie_Library_Final_Project.Controllers
         }
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteWatchedMovies(int userId)
         {
             var response = await _mediator.Send(new DeleteWatchedMoviesCommand(userId));

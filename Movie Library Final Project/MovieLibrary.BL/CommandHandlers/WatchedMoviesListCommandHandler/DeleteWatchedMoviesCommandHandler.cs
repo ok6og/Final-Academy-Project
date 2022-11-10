@@ -23,6 +23,15 @@ namespace MovieLibrary.BL.CommandHandlers.WatchedMoviesListCommandHandler
 
         public async Task<HttpResponse<WatchedList>> Handle(DeleteWatchedMoviesCommand request, CancellationToken cancellationToken)
         {
+            if (request.userId<=0)
+            {
+                return new HttpResponse<WatchedList>
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
             var watchedListToDelete = await _watchedMoviesRepository.GetWatchedMovies(request.userId);
             var firstOne = watchedListToDelete.FirstOrDefault();
             if (firstOne == null)

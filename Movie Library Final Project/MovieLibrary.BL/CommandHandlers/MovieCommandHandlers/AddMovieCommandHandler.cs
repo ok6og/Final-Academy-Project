@@ -23,7 +23,6 @@ namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers
             _movieRepo = movieRepo;
             _mapper = mapper;
         }
-
         public async Task<HttpResponse<Movie>> Handle(AddMovieCommand request, CancellationToken cancellationToken)
         {
             var movie = _mapper.Map<Movie>(request.movie);

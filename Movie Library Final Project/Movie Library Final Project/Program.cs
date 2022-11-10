@@ -40,7 +40,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks()
-    .AddCheck<SqlHealthCheck>("SQL Server");
+    .AddCheck<SqlHealthCheck>("SQL Server")
+    .AddCheck<MongoHealthCheck>("MongoDBConnectionCheck");
 
 builder.Services.AddMediatR(typeof(AddMovieCommandHandler).Assembly);
 

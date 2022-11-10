@@ -33,19 +33,22 @@ namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
                     Value = null
                 };
             }
-            var authorExist = await _userRepository.DeleteUser(request.userId);
-            var response = new HttpResponse<User>()
+            var userExist = await _userRepository.DeleteUser(request.userId);
+            if (userExist == null)
+            {
+                return new HttpResponse<User>()
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Message = "User does not exist",
+                    Value = null
+                };
+            }
+            return new HttpResponse<User>()
             {
                 StatusCode = HttpStatusCode.OK,
                 Message = "Successfully deleted an user",
-                Value = authorExist
+                Value = userExist
             };
-            if (authorExist == null)
-            {
-                response.StatusCode = HttpStatusCode.NotFound;
-                response.Message = "User does not exist";
-            }
-            return response;
         }
     }
 }

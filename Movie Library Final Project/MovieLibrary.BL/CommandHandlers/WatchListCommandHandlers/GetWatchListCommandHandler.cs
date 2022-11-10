@@ -24,6 +24,15 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
 
         public async Task<HttpResponse<IEnumerable<Watchlist>>> Handle(GetWatchListCommand request, CancellationToken cancellationToken)
         {
+            if (request.userId <= 0)
+            {
+                return new HttpResponse<IEnumerable<Watchlist>>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = StaticResponses.UserIdLessThanOrEqualTo0,
+                    Value = null
+                };
+            }
             var listOfwatchList = await _watchListRepository.GetContent(request.userId);
             if (listOfwatchList.Count() == 0)
             {

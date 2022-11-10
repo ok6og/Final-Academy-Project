@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Models;
 
-namespace MovieLibrary.DL.Repository
+namespace MovieLibrary.DL.Repository.MsSqlRepository
 {
     public class MonthlyProfitRepository : IMonthlyProfitRepository
     {
@@ -31,7 +32,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<MonthlyProfit>("INSERT INTO [MonthlyProfit]  (Month, Profit, UserSubscriptionsForMonth,Year) output INSERTED.* VALUES (@Month, @Profit,@UserSubscriptionsForMonth,@Year)",
-                        new { Month = montlyProfit.Month, Profit = montlyProfit.Profit, UserSubscriptionsForMonth = montlyProfit.UserSubscriptions, Year = montlyProfit.Year });
+                        new { montlyProfit.Month, montlyProfit.Profit, UserSubscriptionsForMonth = montlyProfit.UserSubscriptionsForMonth, montlyProfit.Year });
                     _logger.LogInformation("Successfully added a MonthlyProfit");
                     return result;
                 }
@@ -51,7 +52,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<MonthlyProfit>("UPDATE MonthlyProfit SET PROFIT = @Profit, UserSubscriptionsForMonth = @UserSubscriptionsForMonth output INSERTED.* WHERE [Month] = @Month AND Year = @Year",
-                        new { Profit = montlyProfit.Profit, UserSubscriptionsForMonth = montlyProfit.UserSubscriptions,Month = montlyProfit.Month, Year = montlyProfit.Year });
+                        new { montlyProfit.Profit, UserSubscriptionsForMonth = montlyProfit.UserSubscriptionsForMonth, montlyProfit.Month, montlyProfit.Year });
                     _logger.LogInformation("Successfully updated profit sheet");
                     return result;
                 }
@@ -83,6 +84,23 @@ namespace MovieLibrary.DL.Repository
             return false;
         }
 
-
+        public async Task<MonthlyProfit?> GetMonthlyProfit(int month, int year)
+        {
+            try
+            {
+                await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    await conn.OpenAsync();
+                    var result = await conn.QueryFirstOrDefaultAsync<MonthlyProfit>("SELECT * FROM [MonthlyProfit] WITH(NOLOCK) WHERE Month = @Month AND Year = @Year", new { Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month),Year = year });
+                    _logger.LogInformation("Successfully returned a report");
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in {nameof(MonthlyProfit)}: {ex.Message}", ex);
+            }
+            return null;
+        }
     }
 }

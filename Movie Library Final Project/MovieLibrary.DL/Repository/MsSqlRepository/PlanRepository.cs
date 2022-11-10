@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Models;
 
-namespace MovieLibrary.DL.Repository
+namespace MovieLibrary.DL.Repository.MsSqlRepository
 {
     public class PlanRepository : IPlanRepository
     {
@@ -30,7 +30,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<Plan>("INSERT INTO [Plans]  (Type, PricePerMonth) output INSERTED.* VALUES (@Type, @Price)",
-                        new { Type = plan.Type, Price = plan.PricePerMonth });
+                        new { plan.Type, Price = plan.PricePerMonth });
                     _logger.LogInformation("Successfully added a plan");
                     return result;
                 }
@@ -108,7 +108,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<Plan>("UPDATE Plans SET Type = @Type, PricePerMonth = @Price output INSERTED.* WHERE PlanId = @Id",
-                        new { Type = plan.Type, Price = plan.PricePerMonth,Id = plan.PlanId });
+                        new { plan.Type, Price = plan.PricePerMonth, Id = plan.PlanId });
                     _logger.LogInformation("Successfully updated a plan");
                     return result;
                 }

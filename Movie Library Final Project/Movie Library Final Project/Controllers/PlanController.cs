@@ -23,7 +23,8 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get All Plans")]
         public async Task<IActionResult> GetAllPlans()
         {
-            return Ok(await _mediator.Send(new GetAllPlansCommand()));
+            var result = await _mediator.Send(new GetAllPlansCommand());
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -32,32 +33,30 @@ namespace Movie_Library_Final_Project.Controllers
         public async Task<IActionResult> GetPlan(int planId)
         {
             var result = await _mediator.Send(new GetPlanByIdCommand(planId));
-            if (result == null) return NotFound("Plan Doesn't Exist");
-            return Ok(await _mediator.Send(new GetPlanByIdCommand(planId)));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("Create A Plan")]
         public async Task<IActionResult> CreatePlan([FromBody] AddPlanRequest plan)
         {
-            return Ok(await _mediator.Send(new AddPlanCommand(plan)));
+            var result = await _mediator.Send(new AddPlanCommand(plan));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPut("Update A Plan")]
         public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanRequest plan)
         {
-            var result = await _mediator.Send(new GetPlanByIdCommand(plan.PlanId));
-            if (result == null) return NotFound("Plan Doesn't Exist");
-            return Ok(await _mediator.Send(new UpdatePlanCommand(plan)));
+            var result = await _mediator.Send(new UpdatePlanCommand(plan));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [HttpDelete("Delete a Plan")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePlan(int planId)
         {
-            var result = await _mediator.Send(new GetPlanByIdCommand(planId));
-            if (result == null) return NotFound("Plan Doesn't Exist");
-            return Ok(await _mediator.Send(new DeletePlanCommand(planId)));
+            var result = await _mediator.Send(new DeletePlanCommand(planId));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
     }
 }

@@ -8,6 +8,7 @@ using FluentValidation;
 using Movie_Library_Final_Project.Middleware;
 using Movie_Library_Final_Project.HealthChecks;
 using Kafka.KafkaConfig;
+using MovieLibrary.Models.MongoDbModels;
 
 var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -22,11 +23,13 @@ builder.Services.Configure<MyKafkaSettings>(
     builder.Configuration.GetSection(nameof(MyKafkaSettings)));
 builder.Services.Configure<List<MyKafkaSettings>>(
     builder.Configuration.GetSection(nameof(MyKafkaSettings)));
-
+builder.Services.Configure<MongoDbModel>(
+    builder.Configuration.GetSection(nameof(MongoDbModel)));
 
 // Add services to the container.
 builder.Services
     .RegisterRepositories()
+    .RegisterServices()
     .AddAutoMapper(typeof(Program));
 
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();

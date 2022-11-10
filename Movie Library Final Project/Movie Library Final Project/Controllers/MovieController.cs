@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MovieLibrary.Models.Mediatr.MovieCommands;
+using MovieLibrary.Models.Mediatr.UserCommands;
 using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Requests.MovieRequests;
 
@@ -21,7 +22,8 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get All Movies")]
         public async Task<IActionResult> GetAllMovies()
         {
-            return Ok(await _mediator.Send(new GetAllMoviesCommand()));
+            var result = await _mediator.Send(new GetAllMoviesCommand());
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -30,32 +32,30 @@ namespace Movie_Library_Final_Project.Controllers
         public async Task<IActionResult> GetMovie(int movieId)
         {
             var result = await _mediator.Send(new GetMovieByIdCommand(movieId));
-            if (result == null) return NotFound("Movie Doesn't Exist");
-            return Ok(result);
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("Create A Movie")]
         public async Task<IActionResult> CreateMovie([FromBody]AddMovieRequest movie)
         {
-            return Ok(await _mediator.Send(new AddMovieCommand(movie)));
+            var result = await _mediator.Send(new AddMovieCommand(movie));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("Update A Movie")]
         public async Task<IActionResult> UpdateMovie([FromBody] UpdateMovieRequest movie)
         {
-            var result = await _mediator.Send(new GetMovieByIdCommand(movie.MovieId));
-            if (result == null) return NotFound("Movie Doesn't Exist");
-            return Ok(await _mediator.Send(new UpdateMovieCommand(movie)));
+            var result = await _mediator.Send(new UpdateMovieCommand(movie));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
         [HttpDelete("Delete a Movie")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int movieId)
         {
-            var result = await _mediator.Send(new GetMovieByIdCommand(movieId));
-            if (result == null) return NotFound("Movie Doesn't Exist");
-            return Ok(await _mediator.Send(new DeleteMovieCommand(movieId)));
+            var result = await _mediator.Send(new DeleteMovieCommand(movieId));
+            return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
     }
 }

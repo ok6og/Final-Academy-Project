@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kafka\MovieLibrary.Kafka.csproj" />
     <ProjectReference Include="..\Movie Library Final Project\MovieLibrary-Final-Project.csproj" />
     <ProjectReference Include="..\MovieLibrary.DL\MovieLibrary.DL.csproj" />
     <ProjectReference Include="..\MovieLibrary.Models\MovieLibrary.Models.csproj" />

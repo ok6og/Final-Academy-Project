@@ -17,7 +17,7 @@ namespace MovieLibrary.Models.Models
         [Key(2)]
         public int Profit { get; set; }
         [Key(3)]
-        public int UserSubscriptions { get; set; }
+        public int UserSubscriptionsForMonth { get; set; }
         [Key(4)]
         public int Year { get; set; }
     }

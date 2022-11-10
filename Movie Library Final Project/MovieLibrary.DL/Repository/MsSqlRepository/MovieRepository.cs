@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Models;
 
-namespace MovieLibrary.DL.Repository
+namespace MovieLibrary.DL.Repository.MsSqlRepository
 {
     public class MovieRepository : IMovieRepository
     {
@@ -32,7 +32,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<Movie>("INSERT INTO [Movies]  (TITLE, LENGTHINMINUTES, GENRE, RELEASEYEAR) output INSERTED.* VALUES (@Title, @LengthInMinutes, @Genre, @ReleaseYear)",
-                        new { Title = movie.Title, LengthInMinutes = movie.LengthInMinutes, Genre = movie.Genre, ReleaseYear = movie.ReleaseYear });
+                        new { movie.Title, movie.LengthInMinutes, movie.Genre, movie.ReleaseYear });
                     _logger.LogInformation("Successfully added a movie");
                     return result;
                 }
@@ -110,7 +110,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<Movie>("UPDATE MOVIES SET TITLE = @Title, LENGTHINMINUTES = @LengthInMinutes, GENRE = @Genre, RELEASEYEAR = @ReleaseYear output INSERTED.* WHERE MOVIEID = @Id",
-                        new { Title = movie.Title, LengthInMinutes = movie.LengthInMinutes, Genre = movie.Genre, ReleaseYear = movie.ReleaseYear, Id = movie.MovieId });
+                        new { movie.Title, movie.LengthInMinutes, movie.Genre, movie.ReleaseYear, Id = movie.MovieId });
                     _logger.LogInformation("Successfully updated a movie");
                     return result;
                 }

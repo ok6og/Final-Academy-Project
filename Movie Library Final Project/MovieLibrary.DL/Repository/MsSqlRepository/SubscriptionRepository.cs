@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Models;
 
-namespace MovieLibrary.DL.Repository
+namespace MovieLibrary.DL.Repository.MsSqlRepository
 {
     public class SubscriptionRepository : ISubscriptionRepository
     {
@@ -23,7 +23,7 @@ namespace MovieLibrary.DL.Repository
             _configuration = configuration;
         }
 
-        public async Task<Subscription?> AddSubscription(Subscription subscription,int months)
+        public async Task<Subscription?> AddSubscription(Subscription subscription, int months)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace MovieLibrary.DL.Repository
                     var timeNow = DateTime.Now;
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<Subscription>("INSERT INTO [Subscriptions] (PlanId,UserId, CreatedAt, ValidTill) output INSERTED.* VALUES (@PlanId, @UserId, @CreatedAt, @ValidTill)",
-                        new { PlanId = subscription.PlanId, CreatedAt = timeNow, ValidTill = timeNow.AddMonths(months),UserId = subscription.UserId });
+                        new { subscription.PlanId, CreatedAt = timeNow, ValidTill = timeNow.AddMonths(months), subscription.UserId });
                     _logger.LogInformation("Successfully added a subscription");
                     return result;
                 }
@@ -111,7 +111,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstAsync<Subscription>("UPDATE SUBSCRIPTIONS SET PlanId = @PlanId, UserId = @UserId, CreatedAt = @CreatedAt, ValidTill = @ValidTill output INSERTED.* WHERE SUBSCRIPTIONID = @Id",
-                        new { PlanId = subscription.PlanId, UserId = subscription.UserId, CreatedAt = subscription.CreatedAt, ValidTill = subscription.ValidTill, Id = subscription.SubscriptionId });
+                        new { subscription.PlanId, subscription.UserId, subscription.CreatedAt, subscription.ValidTill, Id = subscription.SubscriptionId });
                     _logger.LogInformation("Successfully updated a subscription");
                     return result;
                 }
@@ -131,7 +131,7 @@ namespace MovieLibrary.DL.Repository
                 {
                     var query = "SELECT * FROM SUBSCRIPTIONS WITH(NOLOCK) WHERE MONTH(CreatedAt) = @Month";
                     await conn.OpenAsync();
-                    var result = await conn.QueryAsync<Subscription>(query, new {Month = DateTime.Now.Month});
+                    var result = await conn.QueryAsync<Subscription>(query, new { DateTime.Now.Month });
                     _logger.LogInformation("Successfully got all subscriptions for this month");
                     return result;
                 }

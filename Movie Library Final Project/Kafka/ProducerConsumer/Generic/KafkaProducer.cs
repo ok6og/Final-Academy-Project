@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Kafka.ProducerConsumer.Generic
 {
-    public class KafkaProducer<TKey, TValue>
+    public class KafkaProducer<TKey, TValue> : IKafkaProducer<TKey, TValue>
     {
         private readonly IOptionsMonitor<List<MyKafkaSettings>> _kafkaSettings;
         private readonly IProducer<TKey, TValue> _producer;
@@ -20,7 +20,7 @@ namespace Kafka.ProducerConsumer.Generic
         public KafkaProducer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
         {
             _kafkaSettings = kafkaSettings;
-            _thisKafkaSettings = _kafkaSettings.CurrentValue.First(x => x.objectType.Contains(typeof(TValue).Name));
+            _thisKafkaSettings = _kafkaSettings.CurrentValue.FirstOrDefault(x => x.objectType.Contains(typeof(TValue).Name));
             _config = new ProducerConfig()
             {
                 BootstrapServers = _thisKafkaSettings.BootstrapServers

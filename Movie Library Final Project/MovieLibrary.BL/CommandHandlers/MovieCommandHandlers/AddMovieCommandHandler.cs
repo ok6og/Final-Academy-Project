@@ -9,10 +9,11 @@ using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.MovieCommands;
 using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Requests;
+using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers
 {
-    public class AddMovieCommandHandler : IRequestHandler<AddMovieCommand, Movie>
+    public class AddMovieCommandHandler : IRequestHandler<AddMovieCommand, HttpResponse<Movie>>
     {
         private IMovieRepository _movieRepo;
         private IMapper _mapper;
@@ -23,14 +24,22 @@ namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers
             _mapper = mapper;
         }
 
-        public async Task<Movie> Handle(AddMovieCommand request, CancellationToken cancellationToken)
+        public async Task<HttpResponse<Movie>> Handle(AddMovieCommand request, CancellationToken cancellationToken)
         {
-            if (request.movie == null)
-            {
-                return null;
-            }
             var movie = _mapper.Map<Movie>(request.movie);
-            return await _movieRepo.AddMovie(movie);
+            var result = await _movieRepo.AddMovie(movie);
+            var response = new HttpResponse<Movie>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Message = "Successfully added a movie",
+                Value = result
+            };
+            if (result == null)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.Message = "Movie could'not be added";
+            }
+            return response;
         }
     }
 }

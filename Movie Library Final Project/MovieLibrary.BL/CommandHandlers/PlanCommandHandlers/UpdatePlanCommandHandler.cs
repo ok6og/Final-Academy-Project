@@ -8,10 +8,11 @@ using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.PlanCommands;
 using MovieLibrary.Models.Models;
+using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.PlanCommandHandlers
 {
-    public class UpdatePlanCommandHandler : IRequestHandler<UpdatePlanCommand,Plan>
+    public class UpdatePlanCommandHandler : IRequestHandler<UpdatePlanCommand, HttpResponse<Plan>>
     {
         private IPlanRepository _planRepo;
         private IMapper _mapper;
@@ -22,10 +23,22 @@ namespace MovieLibrary.BL.CommandHandlers.PlanCommandHandlers
             _mapper = mapper;
         }
 
-        public async Task<Plan> Handle(UpdatePlanCommand request, CancellationToken cancellationToken)
+        public async Task<HttpResponse<Plan>> Handle(UpdatePlanCommand request, CancellationToken cancellationToken)
         {
             var plan = _mapper.Map<Plan>(request.plan);
-            return await _planRepo.UpdatPlan(plan);
+            var result = await _planRepo.UpdatPlan(plan);
+            var response = new HttpResponse<Plan>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Message = "Successfully updated a plan",
+                Value = result
+            };
+            if (result == null)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                response.Message = "There is no plan with such Id";
+            }
+            return response;
         }
     }
 }

@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using MovieLibrary.DL.Interfaces;
+using MovieLibrary.DL.Repository;
 using MovieLibrary.Models.Mediatr.MovieCommands;
 using MovieLibrary.Models.Models;
+using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers
 {
-    public class GetMovieByIdCommandHandler : IRequestHandler<GetMovieByIdCommand, Movie>
+    public class GetMovieByIdCommandHandler : IRequestHandler<GetMovieByIdCommand, HttpResponse<Movie>>
     {
         private readonly IMovieRepository _movieRepository;
 
@@ -19,9 +21,21 @@ namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers
             _movieRepository = movieRepository;
         }
 
-        public async Task<Movie> Handle(GetMovieByIdCommand request, CancellationToken cancellationToken)
+        public async Task<HttpResponse<Movie>> Handle(GetMovieByIdCommand request, CancellationToken cancellationToken)
         {
-            return await _movieRepository.GetMovieById(request.movieId);
+            var movie = await _movieRepository.GetMovieById(request.movieId);
+            var response = new HttpResponse<Movie>()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Message = "Successfully gotten an movie",
+                Value = movie
+            };
+            if (movie == null)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                response.Message = "Movie not found";
+            }
+            return response;
         }
     }
 }

@@ -36,6 +36,12 @@ namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 response.Message = "User could'not be added";
+                return response;
+            }
+            if (result.UserId <= 0)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.Message = "Invalid Id";
             }
             return response;
         }

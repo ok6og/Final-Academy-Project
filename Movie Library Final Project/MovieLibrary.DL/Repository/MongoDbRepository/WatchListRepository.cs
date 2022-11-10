@@ -36,11 +36,6 @@ namespace MovieLibrary.DL.Repository.MongoDbRepository
             await _collection.DeleteManyAsync(x => x.UserId == userId);
         }
 
-        public async Task FinishWatchList(WatchedList list)
-        {
-            await _watchedRepo.SaveWatchedMovies(list);
-        }
-
         public async Task<IEnumerable<Watchlist>> GetContent(int userId)
         {
             var collection = await _collection.FindAsync(x => x.UserId == userId);

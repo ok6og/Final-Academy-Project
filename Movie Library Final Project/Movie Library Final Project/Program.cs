@@ -29,6 +29,7 @@ builder.Services.Configure<MongoDbModel>(
 // Add services to the container.
 builder.Services
     .RegisterRepositories()
+    .RegisterServices()
     .AddAutoMapper(typeof(Program));
 
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();

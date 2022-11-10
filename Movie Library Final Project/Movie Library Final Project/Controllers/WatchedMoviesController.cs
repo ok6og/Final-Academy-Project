@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MovieLibrary.BL.Interfaces;
-using MovieLibrary.DL.Interfaces;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using MovieLibrary.Models.Mediatr.WatchedMoviesCommands;
 
 namespace Movie_Library_Final_Project.Controllers
 {
@@ -8,26 +8,25 @@ namespace Movie_Library_Final_Project.Controllers
     [Route("[controller]")]
     public class WatchedMoviesController : ControllerBase
     {
-        private readonly IWatchedMoviesService _watchedListService;
-
-        public WatchedMoviesController(IWatchedMoviesService watchedListService)
+        private readonly IMediator _mediator;
+        public WatchedMoviesController(IMediator mediator)
         {
-            _watchedListService = watchedListService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetWatchedMovies(int userId)
         {
-            var response = await _watchedListService.GetWatchedList(userId);
+            var response = await _mediator.Send(new GetWatchedMoviesListCommand(userId));
             return StatusCode((int)response.StatusCode, new { response.Value, response.Message });
         }
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteWatchedMovies(int userId)
         {
-            await _watchedListService.DeleteWatchedMovies(userId);
-            return Ok();
+            var response = await _mediator.Send(new DeleteWatchedMoviesCommand(userId));
+            return StatusCode((int)response.StatusCode, new { response.Value, response.Message });
         }
     }
 }

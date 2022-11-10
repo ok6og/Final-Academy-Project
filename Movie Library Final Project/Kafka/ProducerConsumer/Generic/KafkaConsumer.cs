@@ -33,28 +33,8 @@ namespace Kafka.ProducerConsumer.Generic
                 .SetKeyDeserializer(new MsgPackDeserializer<TKey>()).Build();
             _consumer.Subscribe(_thisKafkaSettings.Topic);
         }
-        public Task ConsumeValues(CancellationToken cancellationToken)
-        {
-            Task.Run(() =>
-            {
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    try
-                    {
-                        var value = _consumer.Consume();
-                        var objectValue = value.Value;
-                        HandleMesseges(objectValue);
-                        Console.WriteLine("THIS IS CONSUMED");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
+        public abstract Task ConsumeValues(CancellationToken cancellationToken);
 
-                }
-            }, cancellationToken);
-            return Task.CompletedTask;
-        }
         public abstract Task HandleMesseges(TValue value);
     }
 }

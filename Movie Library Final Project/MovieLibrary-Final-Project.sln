@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieLibrary.DL", "MovieLib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieLibrary.Models", "MovieLibrary.Models\MovieLibrary.Models.csproj", "{A48A1B1F-5221-4356-A136-E10D17BB277B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kafka", "Kafka\Kafka.csproj", "{471A7CFE-280C-4B84-B1E1-37C9837785B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieLibrary.Kafka", "Kafka\MovieLibrary.Kafka.csproj", "{471A7CFE-280C-4B84-B1E1-37C9837785B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieLibrary.Test", "MovieLibrary.Test\MovieLibrary.Test.csproj", "{A11E0897-B8CA-47C7-8B80-6D4640283D82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieLibrary.Test", "MovieLibrary.Test\MovieLibrary.Test.csproj", "{A11E0897-B8CA-47C7-8B80-6D4640283D82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

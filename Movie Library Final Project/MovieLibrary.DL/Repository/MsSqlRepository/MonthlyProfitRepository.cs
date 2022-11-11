@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Globalization;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -64,15 +58,13 @@ namespace MovieLibrary.DL.Repository.MsSqlRepository
             return null;
         }
 
-        public async Task<bool> IsThereReportAlready()
+        public async Task<bool> IsThereReportAlready(string month, int year)
         {
             try
             {
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    var month = DateTime.Now.ToString("MMMM");
-                    var year = DateTime.Now.Year;
                     var report = await conn.QueryAsync<MonthlyProfit>("SELECT * FROM MonthlyProfit WITH(NOLOCK) WHERE [Month] = @Month AND Year = @Year", new { Month = month, Year = year });
                     return report.Any();
                 }
@@ -91,7 +83,7 @@ namespace MovieLibrary.DL.Repository.MsSqlRepository
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    var result = await conn.QueryFirstOrDefaultAsync<MonthlyProfit>("SELECT * FROM [MonthlyProfit] WITH(NOLOCK) WHERE Month = @Month AND Year = @Year", new { Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month),Year = year });
+                    var result = await conn.QueryFirstOrDefaultAsync<MonthlyProfit>("SELECT * FROM [MonthlyProfit] WITH(NOLOCK) WHERE Month = @Month AND Year = @Year", new { Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month), Year = year });
                     _logger.LogInformation("Successfully returned a report");
                     return result;
                 }
@@ -99,6 +91,26 @@ namespace MovieLibrary.DL.Repository.MsSqlRepository
             catch (Exception ex)
             {
                 _logger.LogError($"Error in {nameof(MonthlyProfit)}: {ex.Message}", ex);
+            }
+            return null;
+        }
+
+        public async Task<MonthlyProfit?> IncreaseMonthlyProfit(MonthlyProfit montlyProfit)
+        {
+            try
+            {
+                await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    await conn.OpenAsync();
+                    var result = await conn.QueryFirstAsync<MonthlyProfit>("UPDATE MonthlyProfit SET PROFIT = Profit + (@Profit), UserSubscriptionsForMonth = UserSubscriptionsForMonth + (@UserSubscriptionsForMonth) output INSERTED.* WHERE [Month] = @Month AND Year = @Year",
+                        new { montlyProfit.Profit, UserSubscriptionsForMonth = montlyProfit.UserSubscriptionsForMonth, montlyProfit.Month, montlyProfit.Year });
+                    _logger.LogInformation("Successfully increased profit sheet");
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in {nameof(IncreaseMonthlyProfit)}: {ex.Message}", ex);
             }
             return null;
         }

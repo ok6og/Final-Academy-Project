@@ -51,11 +51,11 @@ namespace Movie_Library_Final_Project.Controllers
             var response = await _mediator.Send(new RemoveMovieFromWatchListCommand(userId, movieId));
             return StatusCode((int)response.StatusCode, new { response.Value, response.Message });
         }
-        [HttpPost("AddToWatchedMovies")]
+        [HttpPost("Fininsh watchlist")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddToWatchedMovies(int userId)
+        public async Task<IActionResult> FinishWatchList(int userId)
         {
             var response = await _mediator.Send(new FinishWatchListCommand(userId));
             return StatusCode((int)response.StatusCode, new { response.Value, response.Message });

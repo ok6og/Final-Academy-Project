@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks.Dataflow;
 using AutoMapper;
 using MovieLibrary.DL.Interfaces;
+using MovieLibrary.Kafka.DataFlow;
 using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Responses;
-using System.Threading.Tasks.Dataflow;
-using MovieLibrary.Kafka.DataFlow;
 
 namespace MovieLibrary.BL.Services
 {
@@ -21,8 +16,8 @@ namespace MovieLibrary.BL.Services
         private readonly IMapper _mapper;
         private readonly TransformBlock<Subscription, SubscriptionResponse> _transformBlock;
         private readonly ActionBlock<SubscriptionResponse> _actionBlockEnrichUsers;
-        private readonly TransformBlock<Subscription, MonthlyProfit> _transformBlockMonthlyProfit;
-        private readonly ActionBlock<MonthlyProfit> _actionBlockMonthlyProfit;
+        private readonly TransformBlock<Subscription, List<MonthlyProfit>> _transformBlockMonthlyProfit;
+        private readonly ActionBlock<List<MonthlyProfit>> _actionBlockMonthlyProfit;
 
         public DataFlowServiceSubscription(IUserRepository userRepo, IPlanRepository planRepo, ISubscriptionRepository subscriptionRepository, IMonthlyProfitRepository profitRepo, IMapper mapper)
         {
@@ -45,33 +40,36 @@ namespace MovieLibrary.BL.Services
                 updateUser.UserOnPlan = $"This user has a valid plan for {Math.Abs(hasSubsmonths)} months.";
                 await _userRepo.UpdateUser(updateUser);
             });
-            _transformBlockMonthlyProfit = new TransformBlock<Subscription, MonthlyProfit>(async sub =>
+            _transformBlockMonthlyProfit = new TransformBlock<Subscription, List<MonthlyProfit>>(async sub =>
             {
-                var thisMonthSubs = await _subscriptionRepository.GetAllSubscriptionsForMonth();
-                var listTask = new List<Task<int>>();
-                foreach (var item in thisMonthSubs)
+                int hasSubsmonths = Math.Abs(12 * (DateTime.Now.Year - sub.ValidTill.Year) + DateTime.Now.Month - sub.ValidTill.Month);
+                var planPrice = await _planRepo.GetPlanPrice(sub.PlanId);
+                var listOfTasks = new List<MonthlyProfit>();
+
+                for (int i = 0; i < hasSubsmonths; i++)
                 {
-                    listTask.Add(_planRepo.GetPlanPrice(item.PlanId));
+                    listOfTasks.Add(new MonthlyProfit
+                    {
+                        Profit = planPrice,
+                        UserSubscriptionsForMonth = 1,
+                        Month = DateTime.Now.AddMonths(i).ToString("MMMM"),
+                        Year = DateTime.Now.AddMonths(i).Year
+                    });
                 }
-                var allPlanPrices = await Task.WhenAll(listTask);
-                MonthlyProfit thisProfit = new MonthlyProfit()
-                {
-                    Profit = allPlanPrices.Sum(),
-                    UserSubscriptionsForMonth = thisMonthSubs.Count(),
-                    Month = DateTime.Now.ToString("MMMM"),
-                    Year = DateTime.Now.Year
-                };
-                return thisProfit;
+                return listOfTasks;
             });
-            _actionBlockMonthlyProfit = new ActionBlock<MonthlyProfit>(async sub =>
+            _actionBlockMonthlyProfit = new ActionBlock<List<MonthlyProfit>>(async sub =>
             {
-                if (await _profitRepo.IsThereReportAlready())
+                foreach (var report in sub)
                 {
-                    await _profitRepo.UpdateProfit(sub);
-                }
-                else
-                {
-                    await _profitRepo.AddMonthlyProfit(sub);
+                    if (await _profitRepo.IsThereReportAlready(report.Month,report.Year))
+                    {
+                        await _profitRepo.IncreaseMonthlyProfit(report);
+                    }
+                    else
+                    {
+                        await _profitRepo.AddMonthlyProfit(report);
+                    }
                 }
             });
             _transformBlockMonthlyProfit.LinkTo(_actionBlockMonthlyProfit);

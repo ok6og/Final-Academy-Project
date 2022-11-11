@@ -1,10 +1,7 @@
 using System.Net;
 using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Movie_Library_Final_Project.AutoMapper;
-using Movie_Library_Final_Project.Controllers;
 using MovieLibrary.BL.CommandHandlers.UserCommandHandlers;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.UserCommands;
@@ -74,7 +71,7 @@ namespace MovieLibrary.Test
             var userId = 2;
 
             _userRepoMock.Setup(x => x.GetUserById(userId))
-                .ReturnsAsync(_users.First(x=> x.UserId == userId));
+                .ReturnsAsync(_users.First(x => x.UserId == userId));
 
             //Inject
             GetUserByIdCommand command = new GetUserByIdCommand(userId);
@@ -130,7 +127,7 @@ namespace MovieLibrary.Test
 
             //Inject
             var command = new AddUserCommand(userAdd);
-            var handler = new AddUsersCommandHandler(_userRepoMock.Object,_mapper);
+            var handler = new AddUsersCommandHandler(_userRepoMock.Object, _mapper);
             //Act
             var result = await handler.Handle(command, new CancellationToken());
             //Assert
@@ -227,8 +224,8 @@ namespace MovieLibrary.Test
             var newUser = new UpdateUserRequest()
             {
                 UserId = userId,
-                Age =10,
-                Name ="Gosho"
+                Age = 10,
+                Name = "Gosho"
             };
             var user = _users.First();
             _userRepoMock.Setup(x => x.UpdateUser(It.IsAny<User>()))
@@ -238,7 +235,7 @@ namespace MovieLibrary.Test
                 }).ReturnsAsync(() => user);
             //Inject
             var command = new UpdateUserCommand(newUser);
-            var handler = new UpdateUserCommandHandler(_userRepoMock.Object,_mapper);
+            var handler = new UpdateUserCommandHandler(_userRepoMock.Object, _mapper);
             //Act
             var result = await handler.Handle(command, new CancellationToken());
             //Assert
@@ -298,7 +295,7 @@ namespace MovieLibrary.Test
         public async Task Delete_User_Not_OK()
         {
             //Setup
-            var userId = 2;         
+            var userId = 2;
             _userRepoMock.Setup(x => x.DoesUserHaveSubscription(userId))
                 .ReturnsAsync(true);
             //Inject

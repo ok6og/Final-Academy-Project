@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using MovieLibrary.Models.Responses;
+﻿using MovieLibrary.Models.Responses;
 using Newtonsoft.Json;
 
 namespace Movie_Library_Final_Project.Extensions

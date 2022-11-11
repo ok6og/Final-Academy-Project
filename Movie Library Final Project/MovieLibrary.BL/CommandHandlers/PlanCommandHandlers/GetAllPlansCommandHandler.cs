@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using MovieLibrary.DL.Interfaces;
-using MovieLibrary.DL.Repository;
 using MovieLibrary.Models.Mediatr.PlanCommands;
 using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Responses;

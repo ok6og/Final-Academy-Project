@@ -18,10 +18,10 @@ namespace Movie_Library_Final_Project.AutoMapper
             CreateMap<UpdateSubscriptionRequest, Subscription>();
             CreateMap<AddSubscriptionRequest, SubscriptionResponse>();
             CreateMap<UpdateSubscriptionRequest, SubscriptionResponse>();
-            CreateMap<Subscription,SubscriptionResponse>();
+            CreateMap<Subscription, SubscriptionResponse>();
             CreateMap<AddUserRequest, User>();
             CreateMap<UpdateUserRequest, User>();
-            CreateMap<AddPlanRequest,Plan>();
+            CreateMap<AddPlanRequest, Plan>();
             CreateMap<UpdatePlanRequest, Plan>();
         }
     }

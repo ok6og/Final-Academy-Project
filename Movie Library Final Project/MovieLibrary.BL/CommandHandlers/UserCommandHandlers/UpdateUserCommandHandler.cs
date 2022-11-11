@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.UserCommands;
@@ -12,7 +7,7 @@ using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
 {
-    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand,HttpResponse<User>>
+    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, HttpResponse<User>>
     {
         private IUserRepository _userRepo;
         private IMapper _mapper;

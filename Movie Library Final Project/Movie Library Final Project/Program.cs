@@ -1,14 +1,14 @@
-using MovieLibrary.BL.CommandHandlers.MovieCommandHandlers;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Kafka.KafkaConfig;
 using MediatR;
 using Movie_Library_Final_Project.Extensions;
+using Movie_Library_Final_Project.HealthChecks;
+using Movie_Library_Final_Project.Middleware;
+using MovieLibrary.BL.CommandHandlers.MovieCommandHandlers;
+using MovieLibrary.Models.MongoDbModels;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using Movie_Library_Final_Project.Middleware;
-using Movie_Library_Final_Project.HealthChecks;
-using Kafka.KafkaConfig;
-using MovieLibrary.Models.MongoDbModels;
 
 var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()

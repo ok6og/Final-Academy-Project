@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.WatchListCommands;
 
 namespace Movie_Library_Final_Project.Controllers

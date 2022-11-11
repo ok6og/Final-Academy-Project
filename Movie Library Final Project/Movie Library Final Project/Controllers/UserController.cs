@@ -1,9 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MovieLibrary.Models.Mediatr.MovieCommands;
 using MovieLibrary.Models.Mediatr.UserCommands;
-using MovieLibrary.Models.Models;
-using MovieLibrary.Models.Requests.MovieRequests;
 using MovieLibrary.Models.Requests.UserRequests;
 
 namespace Movie_Library_Final_Project.Controllers
@@ -23,7 +20,7 @@ namespace Movie_Library_Final_Project.Controllers
         [HttpGet("Get All Users")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var result =await _mediator.Send(new GetAllUsersCommand());
+            var result = await _mediator.Send(new GetAllUsersCommand());
             return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
 
@@ -53,7 +50,7 @@ namespace Movie_Library_Final_Project.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int userId)
         {
-            var result =await _mediator.Send(new DeleteUserCommand(userId));
+            var result = await _mediator.Send(new DeleteUserCommand(userId));
             return StatusCode((int)result.StatusCode, new { result.Value, result.Message });
         }
     }

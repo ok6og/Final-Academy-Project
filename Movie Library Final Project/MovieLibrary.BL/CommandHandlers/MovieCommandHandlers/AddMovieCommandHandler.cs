@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.MovieCommands;
 using MovieLibrary.Models.Models;
-using MovieLibrary.Models.Requests;
 using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.MovieCommandHandlers

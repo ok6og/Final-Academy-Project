@@ -1,8 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MovieLibrary.Models.Mediatr.MovieCommands;
-using MovieLibrary.Models.Mediatr.UserCommands;
-using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Requests.MovieRequests;
 
 namespace Movie_Library_Final_Project.Controllers
@@ -36,7 +34,7 @@ namespace Movie_Library_Final_Project.Controllers
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("Create A Movie")]
-        public async Task<IActionResult> CreateMovie([FromBody]AddMovieRequest movie)
+        public async Task<IActionResult> CreateMovie([FromBody] AddMovieRequest movie)
         {
             var result = await _mediator.Send(new AddMovieCommand(movie));
             return StatusCode((int)result.StatusCode, new { result.Value, result.Message });

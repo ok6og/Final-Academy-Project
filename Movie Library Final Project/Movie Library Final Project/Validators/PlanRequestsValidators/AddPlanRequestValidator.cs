@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
-using FluentValidation.AspNetCore;
 using MovieLibrary.Models.Requests.PlanRequests;
 
 namespace Movie_Library_Final_Project.Validators.PlanRequestsValidators
 {
-    public class AddPlanRequestValidator :AbstractValidator<AddPlanRequest>
+    public class AddPlanRequestValidator : AbstractValidator<AddPlanRequest>
     {
         public AddPlanRequestValidator()
         {

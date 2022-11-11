@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MovieLibrary.Models.Mediatr.PlanCommands;
-using MovieLibrary.Models.Mediatr.UserCommands;
-using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Requests.PlanRequests;
-using MovieLibrary.Models.Requests.UserRequests;
 
 namespace Movie_Library_Final_Project.Controllers
 {

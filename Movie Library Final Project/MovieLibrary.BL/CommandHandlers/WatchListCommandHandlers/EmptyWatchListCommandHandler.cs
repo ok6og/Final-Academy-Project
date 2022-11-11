@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.WatchListCommands;
-using MovieLibrary.Models.Models;
 using MovieLibrary.Models.MongoDbModels;
 using MovieLibrary.Models.Responses;
 
@@ -33,7 +27,7 @@ namespace MovieLibrary.BL.CommandHandlers.WatchListCommandHandlers
                     Value = null
                 };
             }
-            var watchlist = await  _watchListRepository.GetWatchList(request.userId);
+            var watchlist = await _watchListRepository.GetWatchList(request.userId);
             if (watchlist == null)
             {
                 return new HttpResponse<Watchlist>

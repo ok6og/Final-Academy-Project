@@ -1,28 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using AutoMapper;
-using Kafka.KafkaConfig;
+﻿using Kafka.KafkaConfig;
 using Kafka.ProducerConsumer.Generic;
-using MessagePack.Formatters;
 using Microsoft.Extensions.Options;
-using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Kafka.DataFlow;
 using MovieLibrary.Models.Models;
-using MovieLibrary.Models.Responses;
 
 namespace Kafka.ProducerConsumer
 {
     public class SubscriptionConsumer : KafkaConsumer<int, Subscription>
     {
-        private readonly IDataFlowServiceSubscriptions _dataFlowService;
+        private readonly IDataFlowMonthlyProfitService _dataFlowService;
+        private readonly IDataFlowEnrichUsersService _dataFlowEnrichUsersService;
 
-        public SubscriptionConsumer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings, IDataFlowServiceSubscriptions dataFlowService) : base(kafkaSettings)
+        public SubscriptionConsumer(IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings, IDataFlowMonthlyProfitService dataFlowService, IDataFlowEnrichUsersService dataFlowEnrichUsersService) : base(kafkaSettings)
         {
             _dataFlowService = dataFlowService;
+            _dataFlowEnrichUsersService = dataFlowEnrichUsersService;
         }
         public override Task ConsumeValues(CancellationToken cancellationToken)
         {
@@ -47,6 +39,7 @@ namespace Kafka.ProducerConsumer
         public override Task HandleMesseges(Subscription value)
         {
             _dataFlowService.HandleSubscriptions(value);
+            _dataFlowEnrichUsersService.HandleSubscriptions(value);
             return Task.CompletedTask;
         }
     }

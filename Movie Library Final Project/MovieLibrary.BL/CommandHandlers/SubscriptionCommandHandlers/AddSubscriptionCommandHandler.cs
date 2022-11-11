@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Confluent.Kafka;
 using Kafka.KafkaConfig;
 using Kafka.ProducerConsumer.Generic;
 using MediatR;
@@ -8,7 +7,6 @@ using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.SubscriptionCommands;
 using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Responses;
-using static MongoDB.Libmongocrypt.CryptContext;
 
 namespace MovieLibrary.BL.CommandHandlers.SubscriptionCommandHandlers
 {
@@ -60,7 +58,7 @@ namespace MovieLibrary.BL.CommandHandlers.SubscriptionCommandHandlers
             var subResponse = _mapper.Map<SubscriptionResponse>(subWithId);
             subResponse.Plan = plan;
             subResponse.User = user;
-            
+
             if (subWithId == null)
             {
                 return new HttpResponse<SubscriptionResponse>()

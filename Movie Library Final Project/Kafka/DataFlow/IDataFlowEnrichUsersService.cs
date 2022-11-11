@@ -2,7 +2,7 @@
 
 namespace MovieLibrary.Kafka.DataFlow
 {
-    public interface IDataFlowMonthlyProfitService
+    public interface IDataFlowEnrichUsersService
     {
         public void HandleSubscriptions(Subscription subscription);
     }

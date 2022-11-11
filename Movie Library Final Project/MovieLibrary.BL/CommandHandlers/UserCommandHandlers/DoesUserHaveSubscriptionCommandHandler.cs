@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.UserCommands;
 using MovieLibrary.Models.Responses;
@@ -31,7 +26,7 @@ namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
             if (isSubscribed == false)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                response.Message = "This user does not have subscription";  
+                response.Message = "This user does not have subscription";
             }
             return response;
         }

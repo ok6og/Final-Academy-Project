@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Kafka.KafkaConfig;
 using Kafka.ProducerConsumer.Generic;
 using MediatR;
@@ -21,8 +16,10 @@ namespace MovieLibrary.BL.CommandHandlers.SubscriptionCommandHandlers
         private readonly IPlanRepository _planRepo;
         private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
+        private readonly IKafkaProducer<int, Subscription> _kafkaProducer;
         private readonly IOptionsMonitor<List<MyKafkaSettings>> _kafkaSettings;
-        private readonly KafkaProducer<int, Subscription> _kafkaProducer;
+
+
 
         public AddSubscriptionCommandHandler(ISubscriptionRepository subsrepo, IMapper mapper, IPlanRepository planRepo, IUserRepository userRepo, IOptionsMonitor<List<MyKafkaSettings>> kafkaSettings)
         {
@@ -36,25 +33,49 @@ namespace MovieLibrary.BL.CommandHandlers.SubscriptionCommandHandlers
         public async Task<HttpResponse<SubscriptionResponse>> Handle(AddSubscriptionCommand request, CancellationToken cancellationToken)
         {
             var sub = _mapper.Map<Subscription>(request.subscription);
+            var plan = await _planRepo.GetPlanById(sub.PlanId);
+            var user = await _userRepo.GetUserById(sub.UserId);
+            if (plan == null)
+            {
+                return new HttpResponse<SubscriptionResponse>()
+                {
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                    Message = "There is no plan with that Id",
+                    Value = null
+                };
+            }
+            if (user == null)
+            {
+                return new HttpResponse<SubscriptionResponse>()
+                {
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                    Message = "There is no user with that Id",
+                    Value = null
+                };
+            }
+
             var subWithId = await _subsRepo.AddSubscription(sub, request.months);
             var subResponse = _mapper.Map<SubscriptionResponse>(subWithId);
-            subResponse.Plan =await _planRepo.GetPlanById(sub.PlanId);
-            subResponse.User = await _userRepo.GetUserById(sub.UserId);
+            subResponse.Plan = plan;
+            subResponse.User = user;
 
-            var response = new HttpResponse<SubscriptionResponse>()
+            if (subWithId == null)
+            {
+                return new HttpResponse<SubscriptionResponse>()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Subscription could not be added",
+                    Value = null
+                };
+            }
+            _kafkaProducer.Produce(subWithId.SubscriptionId, subWithId);
+
+            return new HttpResponse<SubscriptionResponse>()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Message = "Successfully added a subscription",
                 Value = subResponse
             };
-            if (subWithId == null)
-            {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                response.Message = "Subscription could not be added";
-                return response;
-            }
-            _kafkaProducer.Produce(subWithId.SubscriptionId, subWithId);
-            return response;
         }
     }
 }

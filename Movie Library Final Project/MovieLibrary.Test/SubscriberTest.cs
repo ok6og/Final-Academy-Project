@@ -1,32 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using AutoMapper;
-using Confluent.Kafka;
 using Kafka.KafkaConfig;
-using Kafka.ProducerConsumer.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
 using Moq;
 using Movie_Library_Final_Project.AutoMapper;
-using MovieLibrary.BL.CommandHandlers.PlanCommandHandlers;
 using MovieLibrary.BL.CommandHandlers.SubscriptionCommandHandlers;
-using MovieLibrary.BL.CommandHandlers.UserCommandHandlers;
 using MovieLibrary.DL.Interfaces;
-using MovieLibrary.Models.Mediatr.PlanCommands;
 using MovieLibrary.Models.Mediatr.SubscriptionCommands;
-using MovieLibrary.Models.Mediatr.UserCommands;
 using MovieLibrary.Models.Models;
-using MovieLibrary.Models.Requests.PlanRequests;
 using MovieLibrary.Models.Requests.SubscriptionRequests;
-using MovieLibrary.Models.Requests.UserRequests;
-using Newtonsoft.Json.Linq;
 
 namespace MovieLibrary.Test
 {
@@ -137,7 +119,7 @@ namespace MovieLibrary.Test
                 PlanId = planId,
                 UserId = userId
             };
-            _subsRepoMock.Setup(x => x.AddSubscription(It.IsAny<Subscription>(),It.IsAny<int>()))
+            _subsRepoMock.Setup(x => x.AddSubscription(It.IsAny<Subscription>(), It.IsAny<int>()))
                 .ReturnsAsync(() => _subscriptions.FirstOrDefault(x => x.SubscriptionId == subId));
             _userRepoMock.Setup(x => x.GetUserById(userId))
                 .ReturnsAsync(new User
@@ -157,8 +139,8 @@ namespace MovieLibrary.Test
             _config.Setup(x => x.CurrentValue)
                 .Returns(new List<MyKafkaSettings>() { new MyKafkaSettings() { objectType = typeof(Subscription).Name, BootstrapServers = "" } });
             //Inject
-            AddSubscriptionCommand command = new AddSubscriptionCommand(subAdd,months);
-            AddSubscriptionCommandHandler handler = new AddSubscriptionCommandHandler(_subsRepoMock.Object, _mapper,_planRepoMock.Object,_userRepoMock.Object,_config.Object);
+            AddSubscriptionCommand command = new AddSubscriptionCommand(subAdd, months);
+            AddSubscriptionCommandHandler handler = new AddSubscriptionCommandHandler(_subsRepoMock.Object, _mapper, _planRepoMock.Object, _userRepoMock.Object, _config.Object);
             //Act
             var result = await handler.Handle(command, new CancellationToken());
             //Assert
@@ -178,7 +160,7 @@ namespace MovieLibrary.Test
                 PlanId = subscriptionId,
                 SubscriptionId = subscriptionId,
                 UserId = subscriptionId,
-                ValidTill =  DateTime.Now.AddMonths(5)
+                ValidTill = DateTime.Now.AddMonths(5)
             };
             var subs = _subscriptions.First();
             _subsRepoMock.Setup(x => x.UpdatSubscription(It.IsAny<Subscription>()))
@@ -204,14 +186,14 @@ namespace MovieLibrary.Test
                 PlanId = subsId,
                 SubscriptionId = subsId,
                 UserId = subsId,
-                ValidTill =DateTime.Now.AddMonths(subsId)
+                ValidTill = DateTime.Now.AddMonths(subsId)
             };
             var subs = _subscriptions.First();
             _subsRepoMock.Setup(x => x.UpdatSubscription(It.IsAny<Subscription>()))
                 .ReturnsAsync((Subscription)null);
             //Inject
             UpdateSubscriptionCommand command = new UpdateSubscriptionCommand(newSubs);
-            UpdateSubscriptionCommandHandler handler = new UpdateSubscriptionCommandHandler(_subsRepoMock.Object,_mapper);
+            UpdateSubscriptionCommandHandler handler = new UpdateSubscriptionCommandHandler(_subsRepoMock.Object, _mapper);
             //Act
             var result = await handler.Handle(command, new CancellationToken());
             //Assert
@@ -259,7 +241,5 @@ namespace MovieLibrary.Test
             Assert.Null(result.Value);
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
-
-
     }
 }

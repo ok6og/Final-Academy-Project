@@ -21,7 +21,7 @@ namespace Movie_Library_Final_Project.Validators.SubscriptionRequestsValidator
                 .NotEmpty()
                 .GreaterThan(DateTime.MinValue).WithMessage("We can't work with such dates")
                 .LessThan(DateTime.MaxValue).WithMessage("We can't work with such dates");
-            RuleFor(x=> x.SubscriptionId)
+            RuleFor(x => x.SubscriptionId)
                 .NotEmpty().WithMessage("Cant find a subscription without an Id")
                .GreaterThanOrEqualTo(0).WithMessage("There are no negative Id's");
         }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.WatchedMoviesCommands;
-using MovieLibrary.Models.Models;
 using MovieLibrary.Models.MongoDbModels;
 using MovieLibrary.Models.Responses;
 
@@ -23,7 +17,7 @@ namespace MovieLibrary.BL.CommandHandlers.WatchedMoviesListCommandHandler
 
         public async Task<HttpResponse<WatchedList>> Handle(DeleteWatchedMoviesCommand request, CancellationToken cancellationToken)
         {
-            if (request.userId<=0)
+            if (request.userId <= 0)
             {
                 return new HttpResponse<WatchedList>
                 {

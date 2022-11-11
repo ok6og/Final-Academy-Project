@@ -6,7 +6,6 @@ using MovieLibrary.DL.Repository.MongoDbRepository;
 using MovieLibrary.DL.Repository.MsSqlRepository;
 using MovieLibrary.Kafka.DataFlow;
 using MovieLibrary.Models.Models;
-using MovieLibrary.Models.Responses;
 
 namespace Movie_Library_Final_Project.Extensions
 {
@@ -27,7 +26,8 @@ namespace Movie_Library_Final_Project.Extensions
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
             services.AddHostedService<HostedServiceSubscriptionConsumer>();
-            services.AddSingleton<IDataFlowServiceSubscriptions, DataFlowServiceSubscription>();
+            services.AddSingleton<IDataFlowMonthlyProfitService, DataFlowServiceSubscription>();
+            services.AddSingleton<IDataFlowEnrichUsersService, DataFlowEnrichUsers>();
             services.AddSingleton<KafkaProducer<int, Subscription>>();
             return services;
         }

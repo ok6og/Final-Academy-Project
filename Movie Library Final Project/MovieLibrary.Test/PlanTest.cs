@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using AutoMapper;
 using Moq;
 using Movie_Library_Final_Project.AutoMapper;
 using MovieLibrary.BL.CommandHandlers.PlanCommandHandlers;
-using MovieLibrary.BL.CommandHandlers.UserCommandHandlers;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.PlanCommands;
-using MovieLibrary.Models.Mediatr.UserCommands;
 using MovieLibrary.Models.Models;
 using MovieLibrary.Models.Requests.PlanRequests;
-using MovieLibrary.Models.Requests.UserRequests;
 
 namespace MovieLibrary.Test
 {
@@ -99,7 +91,7 @@ namespace MovieLibrary.Test
             //Assert
             Assert.NotNull(result);
             Assert.Null(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound,result.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
         [Fact]
         public async Task Add_Plan_Ok()
@@ -204,15 +196,15 @@ namespace MovieLibrary.Test
                 PricePerMonth = 10,
                 Type = "Some kind of type"
             };
-            _planRepoMock.Setup(x=> x.DeletePlan(planId))
-                .ReturnsAsync(()=> plan);
+            _planRepoMock.Setup(x => x.DeletePlan(planId))
+                .ReturnsAsync(() => plan);
             //Inject
             DeletePlanCommand command = new DeletePlanCommand(planId);
             DeletePlanCommandHandler handler = new DeletePlanCommandHandler(_planRepoMock.Object);
             //Act
             var result = await handler.Handle(command, new CancellationToken());
             //Assert
-            Assert.Equal(plan,result.Value);
+            Assert.Equal(plan, result.Value);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
         [Fact]
@@ -229,7 +221,7 @@ namespace MovieLibrary.Test
             var result = await handler.Handle(command, new CancellationToken());
             //Assert
             Assert.Null(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound,result.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
     }
 }

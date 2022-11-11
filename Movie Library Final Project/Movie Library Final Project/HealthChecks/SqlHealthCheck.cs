@@ -14,7 +14,7 @@ namespace Movie_Library_Final_Project.HealthChecks
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
-            await using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            await using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 try
                 {

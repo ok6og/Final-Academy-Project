@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.Mediatr.UserCommands;
 using MovieLibrary.Models.Models;
@@ -11,7 +6,7 @@ using MovieLibrary.Models.Responses;
 
 namespace MovieLibrary.BL.CommandHandlers.UserCommandHandlers
 {
-    public class GetUserByIdCommandHandler : IRequestHandler<GetUserByIdCommand,HttpResponse<User>>
+    public class GetUserByIdCommandHandler : IRequestHandler<GetUserByIdCommand, HttpResponse<User>>
     {
         private readonly IUserRepository _userRepository;
 

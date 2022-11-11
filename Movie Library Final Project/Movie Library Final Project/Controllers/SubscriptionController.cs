@@ -1,17 +1,9 @@
 ﻿using Kafka.KafkaConfig;
-using Kafka.ProducerConsumer.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
-using MovieLibrary.Models.Mediatr.MovieCommands;
-using MovieLibrary.Models.Mediatr.PlanCommands;
 using MovieLibrary.Models.Mediatr.SubscriptionCommands;
-using MovieLibrary.Models.Mediatr.UserCommands;
-using MovieLibrary.Models.Models;
-using MovieLibrary.Models.Requests.MovieRequests;
 using MovieLibrary.Models.Requests.SubscriptionRequests;
-using MovieLibrary.Models.Responses;
 
 namespace Movie_Library_Final_Project.Controllers
 {

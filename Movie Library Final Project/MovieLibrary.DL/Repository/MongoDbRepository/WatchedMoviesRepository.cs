@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MovieLibrary.DL.Interfaces;
 using MovieLibrary.Models.MongoDbModels;
@@ -42,8 +37,7 @@ namespace MovieLibrary.DL.Repository.MongoDbRepository
         }
         public async Task<WatchedList> UpdateWatchedMovies(WatchedList watchedList)
         {
-            await _collection.DeleteOneAsync(x => x.UserId == watchedList.UserId);
-            await _collection.InsertOneAsync(watchedList);
+            await _collection.ReplaceOneAsync(x => x.UserId == watchedList.UserId, watchedList);
             return watchedList;
         }
     }

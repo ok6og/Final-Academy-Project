@@ -10,15 +10,13 @@ namespace MovieLibrary.BL.Services
     {
         private readonly IPlanRepository _planRepo;
         private readonly IMonthlyProfitRepository _profitRepo;
-        private readonly IMapper _mapper;
         private readonly TransformBlock<Subscription, List<MonthlyProfit>> _transformBlockMonthlyProfit;
         private readonly ActionBlock<List<MonthlyProfit>> _actionBlockMonthlyProfit;
 
-        public DataFlowServiceSubscription(IUserRepository userRepo, IPlanRepository planRepo, ISubscriptionRepository subscriptionRepository, IMonthlyProfitRepository profitRepo, IMapper mapper)
+        public DataFlowServiceSubscription(IPlanRepository planRepo, IMonthlyProfitRepository profitRepo)
         {
             _planRepo = planRepo;
             _profitRepo = profitRepo;
-            _mapper = mapper;
             _transformBlockMonthlyProfit = new TransformBlock<Subscription, List<MonthlyProfit>>(async sub =>
             {
                 int hasSubsmonths = Math.Abs(12 * (DateTime.Now.Year - sub.ValidTill.Year) + DateTime.Now.Month - sub.ValidTill.Month);
@@ -39,19 +37,21 @@ namespace MovieLibrary.BL.Services
             });
             _actionBlockMonthlyProfit = new ActionBlock<List<MonthlyProfit>>(async sub =>
             {
-                foreach (var report in sub)
-                {
-                    if (await _profitRepo.IsThereReportAlready(report.Month, report.Year))
-                    {
-                        await _profitRepo.IncreaseMonthlyProfit(report);
-                    }
-                    else
-                    {
-                        await _profitRepo.AddMonthlyProfit(report);
-                    }
-                }
+                var listofTask = sub.Select(x => UpdateMonthlyReport(x));
+                await Task.WhenAll(listofTask);
             });
             _transformBlockMonthlyProfit.LinkTo(_actionBlockMonthlyProfit);
+        }
+        public async Task UpdateMonthlyReport(MonthlyProfit report)
+        {
+            if (await _profitRepo.IsThereReportAlready(report.Month, report.Year))
+            {
+                await _profitRepo.IncreaseMonthlyProfit(report);
+            }
+            else
+            {
+                await _profitRepo.AddMonthlyProfit(report);
+            }
         }
         public void HandleSubscriptions(Subscription subscription)
         {
